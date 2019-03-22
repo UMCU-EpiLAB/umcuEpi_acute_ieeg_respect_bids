@@ -1,0 +1,34 @@
+Basic scripts to convert annotated (see annotation scheme in docs) micromed file (.TRC) 
+to Brain Imaging Data Structure (BIDS) it generate all the required directory structure and files
+
+The following functions rely and take inspiration on fieltrip data2bids.m function
+(https://github.com/fieldtrip/fieldtrip.git)
+
+fieldtrip toolbox should be on the path (plus the fieldtrip_private folder)
+(see http://www.fieldtriptoolbox.org/faq/matlab_does_not_see_the_functions_in_the_private_directory/) 
+
+jsonlab toolbox
+https://github.com/fangq/jsonlab.git
+
+some external function to read micromed TRC files is used
+https://github.com/fieldtrip/fieldtrip/blob/master/fileio/private/read_micromed_trc.m
+copied in the 'external' folder
+
+For more information contact: suforraxi@gmail.com
+
+These software is free but copyrighted software, distributed
+under the terms of the GNU General Public Licence as published by
+the Free Software Foundation (either version 3, or at your option
+any later version). 
+See the file COPYING for more details.
+
+The functions are copyrighted by their respective authors:
+Matteo Demuru,  SEIN, UMCU
+
+Copyright (C) 2017-2019, Stichting Epilepsie Instellingen Nederland (SEIN)
+Copyright (C) 2017-2019, Universitair Medisch Centrum Utrecht (UMCU) 
+
+
+
+These functions includes functions from other toolboxes that are covered under 
+their respective licenses. See ieeg_respect_bids/external for details.

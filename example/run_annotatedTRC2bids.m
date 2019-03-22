@@ -1,4 +1,4 @@
-
+% Example 
 addpath('../trc2bids/')
 addpath('../micromed_utils/')
 addpath('../external/')

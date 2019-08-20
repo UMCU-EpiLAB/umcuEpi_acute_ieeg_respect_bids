@@ -150,13 +150,31 @@ try
         cfg = [];
         cfg.outputfile                  = fileVHDR;
 
-        cfg.anat.write     = 'no';
-        cfg.meg.write      = 'no';
-        cfg.eeg.write      = 'no';
-        cfg.ieeg.write     = 'no';
-        cfg.channels.write = 'no';
-        cfg.events.write   = 'no';
+%         cfg.anat.write     = 'no';
+%         cfg.meg.write      = 'no';
+%         cfg.eeg.write      = 'no';
+%         cfg.ieeg.write     = 'no';
+%         cfg.channels.write = 'no';
+%         cfg.events.write   = 'no';
 
+        
+       
+        
+          cfg.mri.deface              = 'no';
+          cfg.mri.writesidecar        = 'no';
+          cfg.mri.dicomfile           = [];
+          cfg.meg.writesidecar        = 'no';
+          cfg.eeg.writesidecar        = 'no';
+          cfg.ieeg.writesidecar       = 'no';
+          cfg.events.writesidecar     = 'no';
+          cfg.events.trl              = [];
+          cfg.coordystem.writesidecar = 'no';
+          cfg.channels.writesidecar   = 'no';
+        
+        
+        
+        
+        
         data2bids(cfg, data2write)
 
         data2write;

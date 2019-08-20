@@ -39,7 +39,7 @@ ch2use=zeros(size(chs));
 for i=2:numel(C)
     curr_str=C{i};
     if(~isempty(curr_str))
-        if(contains(curr_str,'[')) %it is a ChannelSubset
+        if(contains(curr_str,'[') || contains(curr_str,']') ) %it is a ChannelSubset
             ch_subset_str=parse_ch_subset(curr_str,chs);
             ch2use(contains(chs,ch_subset_str,'IgnoreCase',true))=1;
         else % ChannelName

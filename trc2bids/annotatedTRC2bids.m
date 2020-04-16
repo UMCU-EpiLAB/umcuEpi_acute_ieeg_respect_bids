@@ -159,24 +159,26 @@ try
 
         
        
-        
-          cfg.mri.deface              = 'no';
-          cfg.mri.writesidecar        = 'no';
-          cfg.mri.dicomfile           = [];
-          cfg.meg.writesidecar        = 'no';
-          cfg.eeg.writesidecar        = 'no';
-          cfg.ieeg.writesidecar       = 'no';
-          cfg.events.writesidecar     = 'no';
-          cfg.events.trl              = [];
-          cfg.coordystem.writesidecar = 'no';
-          cfg.channels.writesidecar   = 'no';
+          cfg.writejson = 'no';
+          cfg.writetsv  = 'no'; 
+          cfg.datatype  = 'ieeg';
+          %cfg.mri.deface              = 'no';
+          %cfg.mri.writesidecar        = 'no';
+          %cfg.mri.dicomfile           = [];
+          %cfg.meg.writesidecar        = 'no';
+          %cfg.eeg.writesidecar        = 'no';
+          %cfg.ieeg.writesidecar       = 'no';
+          %cfg.events.writesidecar     = 'no';
+          %cfg.events.trl              = [];
+          %cfg.coordystem.writesidecar = 'no';
+          %cfg.channels.writesidecar   = 'no';
         
         
         
         
         
         data2bids(cfg, data2write)
-
+        
         data2write;
         %% create json sidecar for ieeg file
         cfg                             = [];
@@ -627,7 +629,7 @@ if(sum(resected))
 end
 
 
-%% resected channels 
+%% edge channels 
 
 edge = metadata.ch2use_edges;
 
@@ -644,6 +646,26 @@ if(sum(edge))
 
     end
 end
+
+%% cavity channels
+
+cavity = metadata.ch2use_cavity;
+
+if(sum(cavity))
+    idx_cavity  = find(cavity);
+    
+    for i=1:numel(idx_cavity)
+
+        type{cc}    = 'cavity'                                ;
+        s_start{cc} = '1'                                   ;
+        s_end{cc}   = 'Inf'                                 ;
+        ch_name{cc} = ch_label(idx_cavity(i))                 ;
+        cc          = cc + 1                                ;
+
+    end
+end
+
+
 
 %% triggers for good epochs
 trigger = metadata.trigger;
@@ -687,7 +709,7 @@ if ~isempty(annotation_tsv)
     write_tsv(filename, annotation_tsv);
 end
 
-%% extract all metadata needed for bid structure
+%% extract all metadata needed for bids structure
 
 % annots - annotations of the trc file
 % ch     - channel labels of all channels in the trc file

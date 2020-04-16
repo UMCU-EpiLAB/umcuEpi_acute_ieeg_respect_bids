@@ -345,6 +345,9 @@ cfg.electrodes.size             = ft_getopt(cfg.electrodes, 'size'              
 cfg.electrodes.group            = ft_getopt(cfg.electrodes, 'group'              , nan);
 cfg.electrodes.material         = ft_getopt(cfg.electrodes, 'material'           , nan);
 cfg.electrodes.manufacturer     = ft_getopt(cfg.electrodes, 'manufacturer'       , nan);
+cfg.electrodes.resected         = ft_getopt(cfg.electrodes, 'resected'           , nan);
+cfg.electrodes.edge             = ft_getopt(cfg.electrodes, 'edge'               , nan);
+cfg.electrodes.cavity           = ft_getopt(cfg.electrodes, 'cavity'             , nan);
 
 
 
@@ -441,7 +444,7 @@ channels_tsv                        = table(name, type, units, sampling_frequenc
 
                                      
 %% electrode table
-fn = {'name' 'x' 'y' 'z' 'size' 'group' 'material' 'manufacturer'};
+fn = {'name' 'x' 'y' 'z' 'size' 'group' 'material' 'manufacturer','resected','edge','cavity'};
 for i=1:numel(fn)
     if numel(cfg.electrodes.(fn{i}))==1
         cfg.electrodes.(fn{i}) = repmat(cfg.electrodes.(fn{i}), header.Num_Chan, 1);
@@ -450,27 +453,51 @@ end
                                         
                                         
 %name                                = mergevector({header.elec(:).Name}', cfg.electrodes.name)                                   ;
-x                                         = repmat({'0'},header.Num_Chan,1)                                                            ;      
-y                                         = repmat({'0'},header.Num_Chan,1)                                                            ;
-z                                         = repmat({'0'},header.Num_Chan,1)                                                            ;
-e_size                                    = repmat({'n/a'},header.Num_Chan,1)                                                          ; %TODO ask
-material                                  = repmat({'n/a'},header.Num_Chan,1)                                                          ; %TODO ask
-manufacturer                              = repmat({'n/a'},header.Num_Chan,1)                                                          ; %TODO ask
+x                                         = repmat({'0'},header.Num_Chan,1);                                                            ;      
+y                                         = repmat({'0'},header.Num_Chan,1);                                                           ;
+z                                         = repmat({'0'},header.Num_Chan,1);                                                            ;
+e_size                                    = repmat({'n/a'},header.Num_Chan,1);                                                          ; %TODO ask
+material                                  = repmat({'n/a'},header.Num_Chan,1);                                                          ; %TODO ask
+manufacturer                              = repmat({'n/a'},header.Num_Chan,1);                                                          ; %TODO ask
+resected                                  = repmat({'n/a'},header.Num_Chan,1);
+edge                                      = repmat({'n/a'},header.Num_Chan,1);
+cavity                                    = repmat({'n/a'},header.Num_Chan,1);
 
 if(any(metadata.ch2use_included))
-    [e_size{metadata.ch2use_included}]        = deal('2.1')                                                                                ;
+    [e_size{metadata.ch2use_included}]        = deal('2.1')         ;                                                                      ;
 end
 
 if(any(metadata.ch2use_included))
-    [material{metadata.ch2use_included}]      = deal('Platinum')                                                                                ;
+    [material{metadata.ch2use_included}]      = deal('Platinum')    ;                                                                            ;
 end
 
 if(any(metadata.ch2use_included))
-    [manufacturer{metadata.ch2use_included}]  = deal('AD-Tech')                                                                                ;
+    [manufacturer{metadata.ch2use_included}]  = deal('AD-Tech')     ;                                                                               ;
 end
 
-electrodes_tsv                            = table(name, x , y, z, e_size, group, material, manufacturer, ...
-                                             'VariableNames',{'name', 'x', 'y', 'z', 'size', 'group', 'material', 'manufacturer'})     ;
+if(any(metadata.ch2use_resected))
+    [resected{metadata.ch2use_resected}]      = deal('resected')    ;                                                                            ;
+end
+
+if(any(metadata.ch2use_edges))
+    [edge{metadata.ch2use_edges}]             = deal('edge')        ;                                                                            ;
+end
+
+if(any(metadata.ch2use_cavity))
+    [cavity{metadata.ch2use_cavity}]          = deal('cavity')      ;                                                                            ;
+end
+
+
+
+
+electrodes_tsv                            = table(name, x , y, z, e_size, ...
+                                                  group, material, manufacturer, ...
+                                                  resected,edge,cavity, ...
+                                             'VariableNames',{'name', 'x', 'y', 'z',...
+                                                              'size', 'group', 'material', 'manufacturer',...
+                                                              'resected','edge','cavity' ...
+                                                              } ...
+                                                  )     ;
 
 
 if ~isempty(ieeg_json)
@@ -615,59 +642,59 @@ end
 
 %% resected channels 
 
-resected = metadata.ch2use_resected;
-
-if(sum(resected))
-    idx_res  = find(resected);
-    
-    for i=1:numel(idx_res)
-
-        type{cc}    = 'resected'                            ;
-        s_start{cc} = '1'                                   ;
-        s_end{cc}   = 'Inf'                                 ;
-        
-        ch_name{cc} = ch_label(idx_res(i))                  ;
-        cc          = cc + 1                                ;
-
-    end
-end
-
-
-%% edge channels 
-
-edge = metadata.ch2use_edges;
-
-if(sum(edge))
-    idx_edge  = find(edge);
-    
-    for i=1:numel(idx_edge)
-
-        type{cc}    = 'edge'                                ;
-        s_start{cc} = '1'                                   ;
-        s_end{cc}   = 'Inf'                                 ;
-        ch_name{cc} = ch_label(idx_edge(i))                 ;
-        cc          = cc + 1                                ;
-
-    end
-end
-
-%% cavity channels
-
-cavity = metadata.ch2use_cavity;
-
-if(sum(cavity))
-    idx_cavity  = find(cavity);
-    
-    for i=1:numel(idx_cavity)
-
-        type{cc}    = 'cavity'                                ;
-        s_start{cc} = '1'                                   ;
-        s_end{cc}   = 'Inf'                                 ;
-        ch_name{cc} = ch_label(idx_cavity(i))                 ;
-        cc          = cc + 1                                ;
-
-    end
-end
+% resected = metadata.ch2use_resected;
+% 
+% if(sum(resected))
+%     idx_res  = find(resected);
+%     
+%     for i=1:numel(idx_res)
+% 
+%         type{cc}    = 'resected'                            ;
+%         s_start{cc} = '1'                                   ;
+%         s_end{cc}   = 'Inf'                                 ;
+%         
+%         ch_name{cc} = ch_label(idx_res(i))                  ;
+%         cc          = cc + 1                                ;
+% 
+%     end
+% end
+% 
+% 
+% %% edge channels 
+% 
+% edge = metadata.ch2use_edges;
+% 
+% if(sum(edge))
+%     idx_edge  = find(edge);
+%     
+%     for i=1:numel(idx_edge)
+% 
+%         type{cc}    = 'edge'                                ;
+%         s_start{cc} = '1'                                   ;
+%         s_end{cc}   = 'Inf'                                 ;
+%         ch_name{cc} = ch_label(idx_edge(i))                 ;
+%         cc          = cc + 1                                ;
+% 
+%     end
+% end
+% 
+% %% cavity channels
+% 
+% cavity = metadata.ch2use_cavity;
+% 
+% if(sum(cavity))
+%     idx_cavity  = find(cavity);
+%     
+%     for i=1:numel(idx_cavity)
+% 
+%         type{cc}    = 'cavity'                                ;
+%         s_start{cc} = '1'                                   ;
+%         s_end{cc}   = 'Inf'                                 ;
+%         ch_name{cc} = ch_label(idx_cavity(i))                 ;
+%         cc          = cc + 1                                ;
+% 
+%     end
+% end
 
 
 

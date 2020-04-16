@@ -2,7 +2,7 @@
 % cfg is a struct specifying three fields
 % 
 % cfg.datasetName  - filename of the header of Brainvision file (.vhdr)
-% cfg.annotFile    - channel name of custom table with the trial information
+% cfg.eventFile    - channel name of custom table with the trial information
 % cfg.channelFile  - file name of channel table as defined in brain imaging
 %                    data structure (BIDS) 
 %
@@ -29,18 +29,18 @@
 function data = importSituation(cfg)
 
 check_input(cfg,'datasetName')
-check_input(cfg,'annotFile')
+check_input(cfg,'eventFile')
 check_input(cfg,'channelFile')
 
 datasetName = cfg.datasetName ;
-annotFile   = cfg.annotFile   ;
+eventFile   = cfg.eventFile   ;
 channelFile = cfg.channelFile ;
 
 trl = [];
 
-if(~isempty(annotFile))
+if(~isempty(eventFile))
     %% read good epochs
-    tsv_annots = readtable(annotFile, 'Delimiter', 'tab', 'FileType', 'text', 'ReadVariableNames', true);
+    tsv_annots = readtable(eventFile, 'Delimiter', 'tab', 'FileType', 'text', 'ReadVariableNames', true);
 
     trl       = [tsv_annots.start tsv_annots.stop]; %TODO check the type or if it is implicit conversion
     idx_trial = strcmp(tsv_annots.type,'trial');

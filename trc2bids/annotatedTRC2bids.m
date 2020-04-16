@@ -100,11 +100,14 @@ try
         sub_dir       = fullfile(proj_dir,sub_label);
         ses_dir       = fullfile(proj_dir,sub_label,ses_label);
         ieeg_dir      = fullfile(proj_dir,sub_label,ses_label,'ieeg');
+        source_dir    = fullfile(proj_dir,'sourcedata',sub_label,ses_label,'ieeg');
         %anat_dir      = fullfile(proj_dir,sub_label,ses_label,'anat');
 
         mydirMaker(sub_dir);
         mydirMaker(ses_dir);
         mydirMaker(ieeg_dir);
+        mydirMaker(source_dir);
+        
         %mydirMaker(anat_dir);
         
         %check if it is empty
@@ -135,10 +138,11 @@ try
         
         
         % file ieeg of the recording
-        copyfile(filename,fullfile(ieeg_dir,fieeg_name));
+        copyfile(filename,fullfile(source_dir,fieeg_name));
 
-        fileTRC  = fullfile(ieeg_dir,fieeg_name);
-        fileVHDR = replace(fileTRC,'.TRC','.vhdr');
+        fileTRC  = fullfile(source_dir,fieeg_name);
+        fileVHDR = fullfile(ieeg_dir,fieeg_name);
+        fileVHDR = replace(fileVHDR,'.TRC','.vhdr');
 
         %% create Brainvision format from TRC
 
@@ -691,12 +695,12 @@ end
 
 
 
-annotation_tsv  = table( type', s_start', s_end', ch_name' , ...
+events_tsv  = table( type', s_start', s_end', ch_name' , ...
                         'VariableNames',{'type', 'start', 'stop', 'channel' });
-if ~isempty(annotation_tsv)
+if ~isempty(events_tsv)
     [p, f, x] = fileparts(cfg.outputfile);
     
-    filename = fullfile(p, [f '_annotations.tsv']);
+    filename = fullfile(p, [f '_events.tsv']);
     %filename = replace(filename,'_task-acute','')
     if isfile(filename)
         existing = read_tsv(filename);
@@ -706,7 +710,7 @@ if ~isempty(annotation_tsv)
     if ~isempty(existing)
         ft_error('existing file is not empty');
     end
-    write_tsv(filename, annotation_tsv);
+    write_tsv(filename, events_tsv);
 end
 
 %% extract all metadata needed for bids structure

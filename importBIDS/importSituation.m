@@ -2,7 +2,7 @@
 % cfg is a struct specifying three fields
 % 
 % cfg.datasetName  - filename of the header of Brainvision file (.vhdr)
-% cfg.eventFile    - channel name of custom table with the trial information
+% cfg.eventFile    - custom table with the trial information
 % cfg.channelFile  - file name of channel table as defined in brain imaging
 %                    data structure (BIDS) 
 %

@@ -36,23 +36,6 @@ datasetName = cfg.datasetName ;
 eventFile   = cfg.eventFile   ;
 channelFile = cfg.channelFile ;
 
-trl = [];
-
-if(~isempty(eventFile))
-    %% read good epochs
-    tsv_annots = readtable(eventFile, 'Delimiter', 'tab', 'FileType', 'text', 'ReadVariableNames', true);
-
-    trl       = [tsv_annots.start tsv_annots.stop]; %TODO check the type or if it is implicit conversion
-    idx_trial = strcmp(tsv_annots.type,'trial');
-    trl       = trl(idx_trial,:);
-    trl       = [trl  zeros(size(trl,1),1)];
-    
-    if(isempty(trl))
-        error('No trial available, try with noArtefact flag at 0')
-    end
-end
-
-
 
 %% read good channels
 tsv_channels = readtable(channelFile, 'Delimiter', 'tab', 'FileType', 'text', 'ReadVariableNames', true);
@@ -71,6 +54,27 @@ idx_included  = ~cellfun(@isempty,idx_included)   ;
 cfg                = []                                           ;
 cfg.dataset        = datasetName                                  ;
 cfg.channel        = ch_label(idx_ecog & idx_good & idx_included) ;
+
+
+
+sfreq = tsv_channels.sampling_frequency(1);
+trl   = [];
+
+if(~isempty(eventFile))
+    %% read good epochs
+    tsv_annots = readtable(eventFile, 'Delimiter', 'tab', 'FileType', 'text', 'ReadVariableNames', true);
+
+    trl       = [ceil(tsv_annots.start*sfreq) ceil(tsv_annots.stop*sfreq)]; %TODO check the type or if it is implicit conversion
+    idx_trial = strcmp(tsv_annots.type,'trial');
+    trl       = trl(idx_trial,:);
+    trl       = [trl  zeros(size(trl,1),1)];
+    
+    if(isempty(trl))
+        error('No trial available, try with noArtefact flag at 0')
+    end
+end
+
+
 
 if(~isempty(trl))
     cfg.trl        = trl                                          ;

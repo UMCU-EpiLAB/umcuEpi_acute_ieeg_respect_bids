@@ -70,8 +70,9 @@ try
     
     output.subjName = sub_label;
     
+    sfreq = header.Rate_Min;
     
-    [status,msg,metadata] = extract_metadata_from_annotations(annots,ch_label,trigger,sub_label);
+    [status,msg,metadata] = extract_metadata_from_annotations(annots,ch_label,trigger,sub_label,sfreq);
     
     output.sitName = upper(replace(deblank(metadata.sit_name),' ',''));
     
@@ -206,11 +207,10 @@ try
 
 
 
-        %% create _channels.tsv
+        % create _channels.tsv
 
-        % create _events.tsv
-        % we are going to use our annotations (i.e. artifacts, burst suppression,
-        % odd behaivour,) to fill the event-list.
+        
+        
 
         % create _electrodes.tsv
         % we don't have a position of the electrodes, anyway we are keeping this
@@ -231,8 +231,8 @@ try
 
         %% move photo with the proper naming into the /ieeg folder
 
-        %% write annotations of the TRC
-        write_annotations_tsv(metadata,cfg);
+        %% create _events.tsv
+        write_events_tsv(metadata,cfg);
 
 
         %% write dataset descriptor
@@ -570,7 +570,7 @@ end
 
 %% write annotations to a tsv file _annotations
 
-function write_annotations_tsv(metadata,cfg)
+function write_events_tsv(metadata,cfg)
 
 %% type / sample start / sample end /  chname;
 ch_label  = metadata.ch_label;
@@ -745,23 +745,23 @@ end
 % annots - annotations of the trc file
 % ch     - channel labels of all channels in the trc file
 
-function [status,msg,metadata]=extract_metadata_from_annotations(annots,ch,trigger,patName)
+function [status,msg,metadata] = extract_metadata_from_annotations(annots,ch,trigger,patName,sfreq)
 try
-    status=0;
-    metadata=[];
+    status   = 0;
+    metadata = [];
     
     %Codes for start and stop of good segments
-    BEG_GS=222;
-    END_GS=223;
+    BEG_GS = 222;
+    END_GS = 223;
     
-    ART_Start='xxx';
-    ART_STOP='yyy';
+    ART_Start = 'xxx';
+    ART_STOP  = 'yyy';
     
-    ODD_Start='vvv';
-    ODD_STOP='www';
+    ODD_Start = 'vvv';
+    ODD_STOP  = 'www';
     
-    trig_pos=trigger(1,:);
-    trig_v=trigger(2,:);
+    trig_pos  = trigger(1,:);
+    trig_v    = trigger(2,:);
     
     %% Check the compulsory fields
     % Included; markers; situation name;Bad;(Bad field can appear more than once)
@@ -769,27 +769,27 @@ try
     
     
     %situation
-    sit_idx=cellfun(@(x) contains(x,{'Situation'}),annots(:,2));
+    sit_idx = cellfun(@(x) contains(x,{'Situation'}),annots(:,2));
     if(sum(sit_idx)~=1)
-        status=1;
+        status = 1;
         error('Missing situation annotation (example "Situation 1A") or too many situation annotation')
     end
-    metadata.sit_name=annots{sit_idx,2};
+    metadata.sit_name = annots{sit_idx,2};
     
     % useful channels
     
-    metadata.ch2use_included=single_annotation(annots,'Included',ch);
+    metadata.ch2use_included = single_annotation(annots,'Included',ch);
     
     
     % markers start and stop good segments
-    begins=find(trig_v==BEG_GS);
-    ends=find(trig_v==END_GS);
+    begins = find(trig_v == BEG_GS);
+    ends   = find(trig_v == END_GS);
     if(isempty(begins) || isempty(ends) )
-        status=1;
+        status = 1;
         error('Missing markers for good segments %i %i',BEG_GS,END_GS);
     end
     if(length(begins)~=length(ends))
-        status=1;
+        status = 1;
         error('Missing start or stop Trigger');
     end
     
@@ -802,37 +802,37 @@ try
     
     
     %% Look for bad channels
-    metadata.ch2use_bad=single_annotation(annots,'Bad',ch);
+    metadata.ch2use_bad = single_annotation(annots,'Bad',ch);
     
     % cavity and silicon are not onmi present
     %% Look for cavity
-    cavity_idx=cellfun(@(x) contains(x,{'Cavity'}),annots(:,2));
-    metadata.ch2use_cavity= false(size(ch));
+    cavity_idx             = cellfun(@(x) contains(x,{'Cavity'}),annots(:,2));
+    metadata.ch2use_cavity = false(size(ch));
     if(sum(cavity_idx))
-        metadata.ch2use_cavity=single_annotation(annots,'Cavity',ch);
+        metadata.ch2use_cavity = single_annotation(annots,'Cavity',ch);
     end
     %% Look for silicon
-    silicon_idx=cellfun(@(x) contains(x,{'Silicon'}),annots(:,2));
-    metadata.ch2use_silicon= false(size(ch));
+    silicon_idx             = cellfun(@(x) contains(x,{'Silicon'}),annots(:,2));
+    metadata.ch2use_silicon = false(size(ch));
     if(sum(silicon_idx))
-        metadata.ch2use_silicon=single_annotation(annots,'Silicon',ch);
+        metadata.ch2use_silicon = single_annotation(annots,'Silicon',ch);
     end
     
-    
+   
     
     %% Look for artefacts
     
-    metadata.artefacts=look_for_annotation_start_stop(annots,'xxx','yyy',ch);
+    metadata.artefacts = look_for_annotation_start_stop(annots,'xxx','yyy',ch,sfreq);
     
     
     %% look for odd behaviour in the recordings additional notes
     
-    metadata.add_notes=look_for_annotation_start_stop(annots,'vvv','www',ch);
+    metadata.add_notes = look_for_annotation_start_stop(annots,'vvv','www',ch,sfreq);
     
     
     %% look for burst suppression
     
-    metadata.bsuppression=look_for_burst_suppression(annots);
+    metadata.bsuppression = look_for_burst_suppression(annots);
     
     
     
@@ -841,13 +841,13 @@ try
     
     format_idx=cellfun(@(x) contains(x,{'Format'}),annots(:,2));
     if(sum(format_idx)<1)
-        status=1;
+        status = 1;
         error('Missing Format annotation (example "Format;Gr[5x4];")')
     end
-    metadata.format_info=annots{format_idx,2};
+    metadata.format_info = annots{format_idx,2};
     
     
-    resected_required=regexpi(metadata.sit_name,'situation 1.');
+    resected_required = regexpi(metadata.sit_name,'situation 1.');
     if(resected_required)
         %% look for resected channels
         metadata.ch2use_resected = single_annotation(annots,'Resected',ch);
@@ -860,7 +860,7 @@ try
     
     %% add triggers
     
-    metadata.trigger.pos  = trigger(1,:)  ;
+    metadata.trigger.pos  = trigger(1,:) / sfreq  ;
     metadata.trigger.val  = trigger(end,:);
     
     %% add channel labels
@@ -876,85 +876,91 @@ catch ME
     
 end
 
-function [artefacts]=look_for_annotation_start_stop(annots,str_start,str_stop,ch)
+function [artefacts] = look_for_annotation_start_stop(annots,str_start,str_stop,ch,sfreq)
 
-start_art=find(contains(annots(:,2),str_start));
-end_art=find(contains(annots(:,2),str_stop));
+start_art = find(contains(annots(:,2),str_start));
+end_art   = find(contains(annots(:,2),str_stop));
 
-if(length(start_art)~=length(end_art))
+if(length(start_art) ~= length(end_art))
     error('starts and ends did no match')
 end
 
-artefacts=cell(size(start_art));
+artefacts = cell(size(start_art));
 
-for i=1:numel(start_art)
-    art=struct;
-    matched_end=find(contains(annots(:,2),replace(annots{start_art(i),2},str_start,str_stop)));
+for i = 1:numel(start_art)
+    art         = struct;
+    matched_end = find(contains(annots(:,2),replace(annots{start_art(i),2},str_start,str_stop)));
+    
     if(isempty(matched_end))
         error('start and stop %s does not match',annots{start_art(i),2});
     end
     if(length(matched_end)>1)
-        matched_end=matched_end((matched_end-start_art(i))>0);
-        [val,idx_closest]=min(matched_end);
-        matched_end=matched_end(idx_closest);%take the closest in time
+        matched_end       = matched_end((matched_end-start_art(i))>0);
+        [val,idx_closest] = min(matched_end);
+        matched_end       = matched_end(idx_closest);%take the closest in time
     end
-    ch_art_idx=parse_annotation(annots{start_art(i),2},ch);
+    ch_art_idx = parse_annotation(annots{start_art(i),2},ch);
     
     
-    art.ch_names={ch{logical(ch_art_idx)}};
+    art.ch_names = {ch{logical(ch_art_idx)}};
     
-    art.pos=[(annots{start_art(i),1}) annots{matched_end,1}];
-    artefacts{i}=art;
+    art.pos = [(annots{start_art(i),1})/sfreq annots{matched_end,1}/sfreq];
+    artefacts{i} = art;
 end
 
-function bsuppression=look_for_burst_suppression(annots)
+function bsuppression = look_for_burst_suppression(annots)
 
-BS_Start='200';
-BS_Stop='201';
+BS_Start = '200';
+BS_Stop  = '201';
 
-start_bs=find(startsWith(annots(:,2),BS_Start));
-end_bs=find(startsWith(annots(:,2),BS_Stop));
+start_bs = find(startsWith(annots(:,2),BS_Start));
+end_bs   = find(startsWith(annots(:,2),BS_Stop));
 
-if(length(start_bs)~=length(end_bs))
+if(length(start_bs) ~= length(end_bs))
     error('burst suppression: starts and ends did no match')
 end
 
-bsuppression=cell(size(start_bs));
+bsuppression = cell(size(start_bs));
 
-for i=1:numel(start_bs)
-    bs=struct;
-    matched_end=find(contains(annots(:,2),BS_Stop));
+for i = 1:numel(start_bs)
+    
+    bs          = struct;
+    matched_end = find(contains(annots(:,2),BS_Stop));
+    
     if(isempty(matched_end))
         error('start and stop %s does not match',annots{start_bs(i),2});
     end
     if(length(matched_end)>1)
-        matched_end=matched_end((matched_end-start_bs(i))>0);
-        [val,idx_closest]=min(matched_end);
-        matched_end=matched_end(idx_closest);%take the closest in time
+        
+        matched_end       = matched_end((matched_end-start_bs(i))>0);
+        [val,idx_closest] = min(matched_end);
+        matched_end       = matched_end(idx_closest);%take the closest in time
     end
     
-    bs.pos=[(annots{start_bs(i),1}) annots{matched_end,1}];
-    bsuppression{i}=bs;
+    bs.pos          = [(annots{start_bs(i),1})/sfreq annots{matched_end,1}/sfreq];
+    bsuppression{i} = bs;
 end
 
-function [ch_parsed]=single_annotation(annots,keyWord,ch)
+function [ch_parsed] = single_annotation(annots,keyWord,ch)
 
 
-ch_idx=cellfun(@(x) contains(x,{keyWord}),annots(:,2));
+ch_idx = cellfun(@(x) contains(x,{keyWord}),annots(:,2));
 
 if(sum(ch_idx)<1)
     error('Missing annotation (example "%s;Gr01;Gr[3:5]")',keyWord)
 end
-ch_parsed=zeros(size(ch));
+ch_parsed = zeros(size(ch));
 if(sum(ch_idx))
-    str2parse={annots{ch_idx,2}};
-    for i=1:numel(str2parse)
+    
+    str2parse = {annots{ch_idx,2}};
+    for i = 1:numel(str2parse)
         
         if(~contains(str2parse{i},';')) %to fix in a better way
              error('format missing semicolon : %s',str2parse{i});
         end
-        C=strsplit(str2parse{i},';');
-        C=C(~cellfun(@isempty,C));
+        C = strsplit(str2parse{i},';');
+        C = C(~cellfun(@isempty,C));
+        
         if(numel(C)>1)%TODO better check
             ch_parsed= ch_parsed | parse_annotation(str2parse{i},ch);
         end

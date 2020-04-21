@@ -832,7 +832,7 @@ try
     
     %% look for burst suppression
     
-    metadata.bsuppression = look_for_burst_suppression(annots);
+    metadata.bsuppression = look_for_burst_suppression(annots,sfreq);
     
     
     
@@ -908,7 +908,7 @@ for i = 1:numel(start_art)
     artefacts{i} = art;
 end
 
-function bsuppression = look_for_burst_suppression(annots)
+function bsuppression = look_for_burst_suppression(annots,sfreq)
 
 BS_Start = '200';
 BS_Stop  = '201';

@@ -79,8 +79,6 @@ try
 
     end
     
-    if(~isempty(log_T)) % some pics are already copied
-    end
     
     % look for pics of subjects imported in BIDS
     subjList = dir(fullfile(cfg.bidsRootFolder,'sub-*'));
@@ -91,6 +89,27 @@ try
         
         c_subjName = replace(subjList(s).name,'sub-','');
         
+        % remove pictures already done
+        idx2remove = zeros(numel(sitList),1);
+        if(~isempty(log_T)) % some pics are already copied
+            
+            for i = 1 : numel(sitList)
+                pic_outName = sprintf('sub-%s_%s_photo.jpg',c_subjName,sitList(i).name);
+                
+                pic_present = strcmp(pic_outName,log_T.bidsPic);
+                if(any(pic_present))
+                    orPic = log_T.orPic{pic_present};
+                    if(~strcmp(orPic,'none') && ~strcmp(orPic,'more than one') )
+                        idx2remove(i) = 1;
+                    end
+                    
+                end
+                
+            end
+        end
+        idx2keep = ~idx2remove;
+        sitList  = sitList(idx2keep);
+         
         for i = 1 : numel(sitList)  
             
             c_sitName  = replace(sitList(i).name,'ses-','');
@@ -108,7 +127,7 @@ try
                     %imwrite(c_image,w_out_F);
                     picOrFileName   = [picOrFileName ; {c_image_F}];
                  
-                else %more than one pic for situations
+                else %more than one pic for situation
                     picOrFileName   = [picOrFileName ; {'more than one'}];
                 end
                    
@@ -124,12 +143,26 @@ try
         
     end
         
-    log_T      = cell2table(subjBIDS,'VariableNames',{'subjID'});
+    subj_T     = cell2table(subjBIDS,'VariableNames',{'subjID'});
     sit_T      = cell2table(sitBIDS,'VariableNames',{'Situation'});
     or_pic_T   = cell2table(picOrFileName,'VariableNames',{'orPic'});
     bids_pic_T = cell2table(picBIDSFileName,'VariableNames',{'bidsPic'});
     
-    log_T = [ log_T sit_T bids_pic_T or_pic_T];          
+    
+    aux_T = [ subj_T sit_T bids_pic_T or_pic_T];          
+    
+    aux_T.Properties.RowNames = aux_T.bidsPic;
+    
+    % update or write log table
+
+     if(~isempty(log_T))
+        log_T.Properties.RowNames = log_T.bidsPic;
+        
+        log_T{aux_T.Row,'orPic'} = aux_T.orPic;
+     else
+        log_T = aux_T;
+     end
+    
     writetable(log_T,log_F,'FileType','text','WriteVariableNames',1,'Delimiter','tab');
     
     % count how many picture expected (according to BIDS) and how many
@@ -137,7 +170,7 @@ try
     countFUN   = @(x) [sum(length(x)) (sum(length(x)) - sum(strcmp(x,'none') | strcmp(x,'more than one')))];
     [G,ids]    = findgroups(log_T.subjID);
     Y          = splitapply(countFUN,log_T.orPic,G);
-    overview_T = [table(ids,'VariableNames',{'subjID'}) array2table(Y,'VariableNames',{'expected_Pic','found'})];
+    overview_T = [table(ids,'VariableNames',{'subjID'}) array2table(Y,'VariableNames',{'expected_pictures','pictures_found'})];
    
     writetable(overview_T,overview_F,'FileType','text','WriteVariableNames',1,'Delimiter','tab');
     

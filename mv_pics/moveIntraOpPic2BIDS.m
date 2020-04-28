@@ -69,8 +69,8 @@ try
     
     
     
-    log_F      = fullfile(cfg.logFolder,'log.tsv');
-    overview_F = fullfile(cfg.logFolder,'overview.tsv');
+    log_F      = fullfile(cfg.logFolder,'pictures_log.tsv');
+    overview_F = fullfile(cfg.logFolder,'pictures_overview.tsv');
     
     log_T = [];
     if(exist(log_F,'file'))

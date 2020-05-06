@@ -124,7 +124,7 @@ try
                     c_image   = imread(c_image_F);
                     
                     w_out_F = fullfile(sitList(i).folder,sitList(i).name,'ieeg',w_image_F)
-                    %imwrite(c_image,w_out_F);
+                    imwrite(c_image,w_out_F);
                     picOrFileName   = [picOrFileName ; {c_image_F}];
                  
                 else %more than one pic for situation

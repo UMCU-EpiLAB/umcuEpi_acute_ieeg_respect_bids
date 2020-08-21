@@ -94,7 +94,7 @@ try
         %               
         %               sub-<label>_ses-<label>_photo.jpg
 
-        task_label    = 'task-acute';
+        task_label    = 'acute';
         ses_label     = strcat('ses-',upper(replace(deblank(metadata.sit_name),' ','')));
 
         %subject dir
@@ -126,10 +126,10 @@ try
         
         end
 
-        fieeg_name = strcat(sub_label,'_',ses_label,'_',task_label,'_','ieeg',exte);
-        fieeg_json_name = strcat(sub_label,'_',ses_label,'_',task_label,'_','ieeg','.json');
-        fchs_name = strcat(sub_label,'_',ses_label,'_',task_label,'_','channels','.tsv');
-        fevents_name = strcat(sub_label,'_',ses_label,'_',task_label,'_','events','.tsv');
+        fieeg_name = strcat(sub_label,'_',ses_label,'_','task-',task_label,'_','ieeg',exte);
+        fieeg_json_name = strcat(sub_label,'_',ses_label,'_','task-',task_label,'_','ieeg','.json');
+        fchs_name = strcat(sub_label,'_',ses_label,'_','task-',task_label,'_','channels','.tsv');
+        fevents_name = strcat(sub_label,'_',ses_label,'_','task-',task_label,'_','events','.tsv');
         felec_name = strcat(sub_label,'_',ses_label,'_','electrodes','.tsv');
         fcoords_name = strcat(sub_label,'_',ses_label,'_','coordsystem','.json');
         fpic_name = strcat(sub_label,'_',ses_label,'_','photo','.jpg');
@@ -165,6 +165,7 @@ try
         
        
           cfg.writejson = 'no';
+          cfg.ieeg.writesidecar     = 'no';
           cfg.writetsv  = 'no'; 
           cfg.datatype  = 'ieeg';
           %cfg.mri.deface              = 'no';
@@ -184,7 +185,10 @@ try
         
         data2bids(cfg, data2write)
         
-        data2write;
+        % delete the json created by fieldtrip in order to create the
+        % custom one
+        delete(replace(cfg.outputfile,'vhdr','json'))
+       
         %% create json sidecar for ieeg file
         cfg                             = [];
         cfg.ieeg                        = struct;
@@ -196,7 +200,7 @@ try
 
         cfg.TaskName                    = task_label;
         cfg.InstitutionName             = 'University Medical Center Utrecht';
-        cfg.InstitutionalDepartmentName = 'Clinical Neurophysiology Department';
+        %cfg.InstitutionalDepartmentName = 'Clinical Neurophysiology Department';
         cfg.InstitutionAddress          = 'Heidelberglaan 100, 3584 CX Utrecht';
         cfg.Manufacturer                = 'Micromed';
         cfg.ManufacturersModelName      = sprintf('Acqui.eq:%i  File_type:%i',header.acquisition_eq,header.file_type);
@@ -261,11 +265,11 @@ function create_datasetDesc(proj_dir)
 ddesc_json.Name               = 'RESPECT' ;
 ddesc_json.BIDSVersion        = 'BEP010';
 ddesc_json.License            = 'Not licenced yet';
-ddesc_json.Authors            = 'Demuru M., Zweiphenning W.J.E., Zijlmans G.J.M.';
-ddesc_json.Acknowledgements   = 'D''angremont E., Wassenaar M.';
+ddesc_json.Authors            = {'Demuru M.,', 'Zweiphenning W.J.E.,', 'van Blooijs D.,', 'Leijten F.S.S.,', 'Zijlmans G.J.M.'};
+ddesc_json.Acknowledgements   = 'D''angremont E.,  Wassenaar M.';
 ddesc_json.HowToAcknowledge   = 'possible paper to quote' ;
-ddesc_json.Funding            = 'Epi-Sign Project' ;  
-ddesc_json.ReferencesAndLinks = 'articles and/or links';
+ddesc_json.Funding            = {'Epi-Sign Project'} ;  
+ddesc_json.ReferencesAndLinks = {'articles and/or links'};
 ddesc_json.DatasetDOI         = 'DOI of the dataset if online'; 
 
 
@@ -312,6 +316,7 @@ cfg.ieeg.EpochLength                  = ft_getopt(cfg.ieeg, 'EpochLength'       
 %% IEEG specific fields
 cfg.ieeg.SamplingFrequency            = ft_getopt(cfg.ieeg, 'SamplingFrequency'          ); % REQUIRED.
 cfg.ieeg.PowerLineFrequency           = ft_getopt(cfg.ieeg, 'PowerLineFrequency'         ); % REQUIRED.
+cfg.ieeg.SoftwareFilters              = ft_getopt(cfg.ieeg, 'SoftwareFilters'            ); % REQUIRED.
 cfg.ieeg.iEEGReference                = ft_getopt(cfg.ieeg, 'iEEGReference'              ); % REQUIRED.
 cfg.ieeg.ElectrodeManufacturer        = ft_getopt(cfg.ieeg, 'ElectrodeManufacturer'      ); %RECOMMENDED
 cfg.ieeg.iEEGElectrodeGroups          = ft_getopt(cfg.ieeg, 'iEEGElectrodeGroups'        ); %RECOMMENDED
@@ -385,6 +390,7 @@ ieeg_json.EpochLength                  = 0;
 %% IEEG specific fields
 ieeg_json.SamplingFrequency            = header.Rate_Min;
 ieeg_json.PowerLineFrequency           = 50;
+ieeg_json.SoftwareFilters              = 'n/a';
 ieeg_json.iEEGReference                = 'probably mastoid';
 ieeg_json.ElectrodeManufacturer        = 'AD-TECH';
 ieeg_json.iEEGElectrodeGroups          = metadata.format_info;
@@ -421,9 +427,9 @@ end
 
 units                               = mergevector({header.elec(:).Unit}', cfg.channels.units)                                  ;
 sampling_frequency                  = mergevector(repmat(header.Rate_Min, header.Num_Chan, 1), cfg.channels.sampling_frequency);
-low_cutoff                          = {header.elec(:).Prefiltering_LowPass_Limit}';                                             ;
-high_cutoff                         = {header.elec(:).Prefiltering_HiPass_Limit}';%/1000                                         ;
-high_cutoff                         = cellfun(@(x)x./1000,high_cutoff,'UniformOutput',false);
+low_cutoff                          = repmat(468,header.Num_Chan, 1); %{header.elec(:).Prefiltering_LowPass_Limit}';  468                                           ;
+high_cutoff                         = repmat(0.15,header.Num_Chan, 1); %{header.elec(:).Prefiltering_HiPass_Limit}';%/1000  0.15                                       ;
+%high_cutoff                         = cellfun(@(x)x./1000,high_cutoff,'UniformOutput',false);
 reference                           = {header.elec(:).Ref}'                                                                    ;
 
 group                               = extract_group_info(metadata)                                                             ;
@@ -437,8 +443,8 @@ status_description                  = ch_status_desc                            
 
 
 
-channels_tsv                        = table(name, type, units, sampling_frequency, low_cutoff,    ...
-                                            high_cutoff, reference, group, notch, software_filters,  ...
+channels_tsv                        = table(name, type, units, low_cutoff,    ...
+                                            high_cutoff, reference, group, sampling_frequency, notch, software_filters,  ...
                                             status, status_description                                                        );
 
 
@@ -1074,7 +1080,9 @@ function write_json(filename, json)
 json = remove_empty(json);
 ft_info('writing %s\n', filename);
 if ft_hastoolbox('jsonlab', 3)
-    savejson('', json, filename);
+    opt.FileName     = filename;
+    opt.SingletCell  = 1;
+    savejson('', json, opt);
 else
     str = jsonencode(json);
     fid = fopen(filename, 'w');

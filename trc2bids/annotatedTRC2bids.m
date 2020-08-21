@@ -618,8 +618,8 @@ if(~isempty(artefact))
         for j = 1 : numel(curr_ch)
             
             type{cc}     = 'artefact'                           ;
-            s_start{cc}  = num2str(artefact{i}.pos(1))  * metadata.sfreq         ;
-            s_end{cc}    = num2str(artefact{i}.pos(end)) * metadata.sfreq        ;
+            s_start{cc}  = num2str(artefact{i}.pos(1) * metadata.sfreq)           ;
+            s_end{cc}    = num2str(artefact{i}.pos(end) * metadata.sfreq )        ;
             ch_name{cc}  = curr_ch{j}; 
             onset{cc}    = num2str(artefact{i}.pos(1));
             duration{cc} = num2str(artefact{i}.pos(end)-artefact{i}.pos(1));
@@ -635,8 +635,8 @@ if(~isempty(bsuppression))
     for i=1:numel(bsuppression)
 
         type{cc}     = 'bsuppression'                       ;
-        s_start{cc}  = num2str(bsuppression{i}.pos(1))   * metadata.sfreq     ;
-        s_end{cc}    = num2str(bsuppression{i}.pos(end)) * metadata.sfreq    ;
+        s_start{cc}  = num2str(bsuppression{i}.pos(1) * metadata.sfreq)       ;
+        s_end{cc}    = num2str(bsuppression{i}.pos(end) * metadata.sfreq )    ;
         ch_name{cc}  = 'all';
         onset{cc}    = num2str(bsuppression{i}.pos(1));
         duration{cc} = num2str(bsuppression{i}.pos(end)-bsuppression{i}.pos(1));
@@ -659,8 +659,8 @@ if(~isempty(addnotes))
         
         for j = 1 : numel(curr_ch)
             type{cc}     = 'oddbehaviour'                       ;
-            s_start{cc}  = num2str(addnotes{i}.pos(1)) * metadata.sfreq          ;
-            s_end{cc}    = num2str(addnotes{i}.pos(end)) * metadata.sfreq        ;
+            s_start{cc}  = num2str(addnotes{i}.pos(1) * metadata.sfreq )          ;
+            s_end{cc}    = num2str(addnotes{i}.pos(end)* metadata.sfreq )        ;
             ch_name{cc}  = num2str(curr_ch{j})                  ;
             onset{cc}    = num2str(addnotes{i}.pos(1))          ;
             duration{cc} = num2str(addnotes{i}.pos(end)-addnotes{i}.pos(1));

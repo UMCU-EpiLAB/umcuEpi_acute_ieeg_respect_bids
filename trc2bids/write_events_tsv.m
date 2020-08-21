@@ -1,4 +1,4 @@
-%% write annotations to a tsv file _annotations
+%% write annotations to a tsv file _events
 
 function write_events_tsv(metadata,cfg)
 

@@ -701,7 +701,7 @@ end
 %events_tsv  = table( type', s_start', s_end', ch_name' , ...
 %                        'VariableNames',{'type', 'start', 'stop', 'channel' });
 events_tsv  = table( onset', duration' ,type', s_start', s_end', ch_name' , ...
-                        'VariableNames',{'onset','duration','trial_type', 'sample_start', 'sample_stop', 'channel' });
+                        'VariableNames',{'onset','duration','trial_type', 'sample_start', 'sample_stop', 'electrode_involved' });
 if ~isempty(events_tsv)
     [p, f, x] = fileparts(cfg.outputfile);
     

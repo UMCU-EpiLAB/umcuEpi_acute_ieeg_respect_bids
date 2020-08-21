@@ -65,7 +65,7 @@ if(~isempty(eventFile))
     tsv_annots = readtable(eventFile, 'Delimiter', 'tab', 'FileType', 'text', 'ReadVariableNames', true);
 
     trl       = [ceil(tsv_annots.start*sfreq) ceil(tsv_annots.stop*sfreq)]; %TODO check the type or if it is implicit conversion
-    idx_trial = strcmp(tsv_annots.type,'trial');
+    idx_trial = strcmp(tsv_annots.trial_type,'trial');
     trl       = trl(idx_trial,:);
     trl       = [trl  zeros(size(trl,1),1)];
     

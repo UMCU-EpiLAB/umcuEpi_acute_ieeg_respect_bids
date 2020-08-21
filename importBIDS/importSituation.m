@@ -64,7 +64,7 @@ if(~isempty(eventFile))
     %% read good epochs
     tsv_annots = readtable(eventFile, 'Delimiter', 'tab', 'FileType', 'text', 'ReadVariableNames', true);
 
-    trl       = [ceil(tsv_annots.start*sfreq) ceil(tsv_annots.stop*sfreq)]; %TODO check the type or if it is implicit conversion
+    trl       = [ceil(tsv_annots.sample_start) ceil(tsv_annots.sample_stop)]; %TODO check the type or if it is implicit conversion
     idx_trial = strcmp(tsv_annots.trial_type,'trial');
     trl       = trl(idx_trial,:);
     trl       = [trl  zeros(size(trl,1),1)];

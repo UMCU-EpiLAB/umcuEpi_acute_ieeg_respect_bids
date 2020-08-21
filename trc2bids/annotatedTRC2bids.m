@@ -618,8 +618,8 @@ if(~isempty(artefact))
         for j = 1 : numel(curr_ch)
             
             type{cc}     = 'artefact'                           ;
-            s_start{cc}  = num2str(artefact{i}.pos(1))          ;
-            s_end{cc}    = num2str(artefact{i}.pos(end))        ;
+            s_start{cc}  = num2str(artefact{i}.pos(1))  * metadata.sfreq         ;
+            s_end{cc}    = num2str(artefact{i}.pos(end)) * metadata.sfreq        ;
             ch_name{cc}  = curr_ch{j}; 
             onset{cc}    = num2str(artefact{i}.pos(1));
             duration{cc} = num2str(artefact{i}.pos(end)-artefact{i}.pos(1));
@@ -635,8 +635,8 @@ if(~isempty(bsuppression))
     for i=1:numel(bsuppression)
 
         type{cc}     = 'bsuppression'                       ;
-        s_start{cc}  = num2str(bsuppression{i}.pos(1))      ;
-        s_end{cc}    = num2str(bsuppression{i}.pos(end))    ;
+        s_start{cc}  = num2str(bsuppression{i}.pos(1))   * metadata.sfreq     ;
+        s_end{cc}    = num2str(bsuppression{i}.pos(end)) * metadata.sfreq    ;
         ch_name{cc}  = 'all';
         onset{cc}    = num2str(bsuppression{i}.pos(1));
         duration{cc} = num2str(bsuppression{i}.pos(end)-bsuppression{i}.pos(1));
@@ -659,8 +659,8 @@ if(~isempty(addnotes))
         
         for j = 1 : numel(curr_ch)
             type{cc}     = 'oddbehaviour'                       ;
-            s_start{cc}  = num2str(addnotes{i}.pos(1))          ;
-            s_end{cc}    = num2str(addnotes{i}.pos(end))        ;
+            s_start{cc}  = num2str(addnotes{i}.pos(1)) * metadata.sfreq          ;
+            s_end{cc}    = num2str(addnotes{i}.pos(end)) * metadata.sfreq        ;
             ch_name{cc}  = num2str(curr_ch{j})                  ;
             onset{cc}    = num2str(addnotes{i}.pos(1))          ;
             duration{cc} = num2str(addnotes{i}.pos(end)-addnotes{i}.pos(1));
@@ -683,8 +683,8 @@ if(~isempty(trigger))
     for i=1:numel(idx_begins)
 
         type{cc}     = 'trial'                               ;
-        s_start{cc}  = trigger.pos(idx_begins(i))            ;
-        s_end{cc}    = trigger.pos(idx_ends(i))              ;
+        s_start{cc}  = trigger.pos(idx_begins(i)) * metadata.sfreq  ;
+        s_end{cc}    = trigger.pos(idx_ends(i)) * metadata.sfreq    ;
         ch_name{cc}  = 'ALL'                                 ;
         onset{cc}    = num2str(trigger.pos(idx_begins(i)))          ;
         duration{cc} = num2str(trigger.pos(idx_ends(i)) - trigger.pos(idx_begins(i)));
@@ -701,7 +701,7 @@ end
 %events_tsv  = table( type', s_start', s_end', ch_name' , ...
 %                        'VariableNames',{'type', 'start', 'stop', 'channel' });
 events_tsv  = table( onset', duration' ,type', s_start', s_end', ch_name' , ...
-                        'VariableNames',{'onset','duration','trial_type', 'start', 'stop', 'channel' });
+                        'VariableNames',{'onset','duration','trial_type', 'sample_start', 'sample_stop', 'channel' });
 if ~isempty(events_tsv)
     [p, f, x] = fileparts(cfg.outputfile);
     
@@ -842,6 +842,7 @@ try
     metadata.trigger.pos  = trigger(1,:) / sfreq  ;
     metadata.trigger.val  = trigger(end,:);
     
+    metadata.sfreq = sfreq; 
     %% add channel labels
     
     metadata.ch_label = ch;

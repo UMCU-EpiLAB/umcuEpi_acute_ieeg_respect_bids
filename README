@@ -1,5 +1,5 @@
 Basic scripts to convert annotated (see annotation scheme in docs) micromed file (.TRC) 
-to Brain Imaging Data Structure (BIDS) it generate all the required directory structure and files
+to Brain Imaging Data Structure (BIDS) it generates all the required directory structure and files
 
 The following functions rely and take inspiration on fieltrip data2bids.m function
 (https://github.com/fieldtrip/fieldtrip.git)

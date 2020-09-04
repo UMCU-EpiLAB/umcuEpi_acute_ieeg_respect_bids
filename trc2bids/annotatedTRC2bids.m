@@ -166,6 +166,10 @@ try
         % delete the json created by fieldtrip in order to create the
         % custom one
         delete(replace(cfg.outputfile,'vhdr','json'))
+        
+        % delete the channels.tsv created by fieldtrip in order to create
+        % the cusom one
+        delete(replace(cfg.outputfile,'ieeg.vhdr','channels.tsv'))
        
         %% create json sidecar for ieeg file
         cfg                             = [];

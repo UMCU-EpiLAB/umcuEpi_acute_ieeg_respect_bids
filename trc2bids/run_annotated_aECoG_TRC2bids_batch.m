@@ -39,7 +39,7 @@ addpath(jsonlab_folder)
 
 %% specify folder where BIDS files should be stored
 cfg.proj_dir = '';
-%cfg.proj_dir = '/home/willemiek/Desktop/Temp_Acute/Temp_converted/';            % folder to store bids files
+cfg.proj_dir = '/home/willemiek/Desktop/Temp_Acute/Temp_converted/';            % folder to store bids files
 if isempty(cfg.proj_dir)
     disp('Navigate to the folder where you want to store the BIDS files.')
     cfg.proj_dir = uigetdir('Navigate to the folder where you want to store the BIDS files.');
@@ -55,7 +55,7 @@ switch type
 %% 1) run all patients in database
 
 dbdir = '';
-%dbdir = '/home/willemiek/Desktop/Temp_Acute/Temp_anonymized_annotated/patients/';   % micromed folder where the anonymized and annotated TRC files are stored
+dbdir = '/home/willemiek/Desktop/Temp_Acute/Temp_anonymized_annotated/patients/';   % micromed folder where the anonymized and annotated TRC files are stored
 if isempty(dbdir)
     disp('Navigate to the micromed folder where the anonymized and annotated TRC files are stored')
     dbdir = uigetdir('Navigate to the micromed folder where the anonymized and annotated TRC files are stored');
@@ -65,13 +65,17 @@ pats = dir(dbdir);
 i_pat = find(contains({pats.name},'PAT'));
 pats = pats(i_pat);
 runpat = struct;
+cfg.runall=1;
+
 for pat = 1:size(pats,1)
     
     if contains(pats(pat).name,'PAT')
         cfg.pathname = [fullfile(dbdir,pats(pat).name),'/'];
         
         files = dir(cfg.pathname);
-        
+        i_files = find(contains({files.name},'EEG'));
+        files = files(i_files);
+
         if size(files,1)<1
             error('Pathname is wrong, no files found')
         end
@@ -89,7 +93,7 @@ for pat = 1:size(pats,1)
                 file = filesplit{end-1};
                 
                 fprintf('Running %s, writing EEG: %s to BIDS \n', patient,file)
-                [runpat(pat).runall(i).status,runpat(pat).runall(i).msg,runpat(pat).runall(i).output] = annotatedTRC2bids(cfg);
+                [runpat(pat).runall(i).status,runpat(pat).runall(i).msg,runpat(pat).runall(i).output] = annotatedTRC2bids(cfg,i);
             
             end
         end
@@ -139,6 +143,7 @@ files = dir(cfg.pathname);
 i_files = find(contains({files.name},'EEG'));
 files = files(i_files);
 runall = struct;
+cfg.runall=1;
 
 if size(files,1)<1
     error('Pathname is wrong, no files found')
@@ -157,7 +162,7 @@ for i=1:size(files,1)
         file = filesplit{end-1};
         
         fprintf('Running %s, writing EEG: %s to BIDS \n', patient,file)
-        [runall(i).status,runall(i).msg,runall(i).output] = annotatedTRC2bids(cfg);
+        [runall(i).status,runall(i).msg,runall(i).output] = annotatedTRC2bids(cfg,i);
 
     end
 end
@@ -172,7 +177,7 @@ end
         
 %% 3) run one single file
 cfg.pathname = '';
-%cfg.pathname = '/home/willemiek/Desktop/Temp_Acute/Temp_anonymized_annotated/patients/PAT_6';   % patient folder where the anonymized and annotated TRC files are stored
+cfg.pathname = '/home/willemiek/Desktop/Temp_Acute/Temp_anonymized_annotated/patients/PAT_6';   % patient folder where the anonymized and annotated TRC files are stored
 if isempty(cfg.pathname)
     disp('Navigate to the patient folder where the anonymized and annotated TRC files are stored')
     cfg.pathname = uigetdir('Navigate to the patient folder where the anonymized and annotated TRC files are stored');
@@ -196,7 +201,7 @@ filesplit = strsplit(fileinput,{'_','.TRC'});
 file = filesplit{end-1};
 
 fprintf('Running %s, writing EEG: %s to BIDS \n', patient,file)
-[status,msg,output] = annotatedTRC2bids(cfg);
+[status,msg,output] = annotatedTRC2bids(cfg,1);
 
 if status
     disp('Run is done, but still had an error')

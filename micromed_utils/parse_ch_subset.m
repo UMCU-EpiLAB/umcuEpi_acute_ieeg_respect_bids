@@ -23,6 +23,11 @@ function [ch_subset_str]=parse_ch_subset(ch_subset,chs)
 ch_subset_str={}; 
 [ch_name,remain]=strtok(ch_subset,'[');
 
+% deblank ch_name
+ch_name = deblank(ch_name);
+ch_name_flipped = deblank(ch_name(end:-1:1));
+ch_name = ch_name_flipped(end:-1:1);
+
 if(strcmp(remain(1),'[') &&  strcmp(remain(end),']'))
     
     remain=remain(2:end-1);

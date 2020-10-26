@@ -121,17 +121,20 @@ header.Tigger_Area_Length=fread(fid,1,'uint32');
 % ============== Retrieving electrode info  ===============
 % Order
 fseek(fid,184,'bof');
-OrderOff = fread(fid,1,'ulong');
+OrderOff = fread(fid,1,'ulong');    % Same as Electrode_area
 fseek(fid,OrderOff,'bof');
-vOrder = zeros(header.Num_Chan,1);
+vOrder = zeros(header.Num_Chan,1);  % Same as code
 for iChan = 1 : header.Num_Chan, vOrder(iChan) = fread(fid,1,'ushort'); end
 fseek(fid,200,'bof');
 ElecOff = fread(fid,1,'ulong');
 for iChan = 1 : header.Num_Chan
     fseek(fid,ElecOff+128*vOrder(iChan),'bof');
     if ~fread(fid,1,'uchar'), continue; end
+    fseek(fid,-1,0);
     header.elec(iChan).bip = fread(fid,1,'uchar');
-    header.elec(iChan).Name = deblank(char(fread(fid,6,'char'))');
+    temp = deblank(char(fread(fid,6,'uchar'))');
+    temp_flipped = deblank(temp(end:-1:1));
+    header.elec(iChan).Name = temp_flipped(end:-1:1);
     header.elec(iChan).Name(isspace(header.elec(iChan).Name)) = []; % remove spaces
     header.elec(iChan).Ref = deblank(char(fread(fid,6,'char'))');
     header.elec(iChan).LogicMin = fread(fid,1,'long');

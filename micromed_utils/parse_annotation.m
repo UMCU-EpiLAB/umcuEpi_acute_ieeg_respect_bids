@@ -43,7 +43,11 @@ for i=2:numel(C)
             ch_subset_str=parse_ch_subset(curr_str,chs);
             ch2use(contains(chs,ch_subset_str,'IgnoreCase',true))=1;
         else % ChannelName
-             ch2use(contains(chs,curr_str,'IgnoreCase',true))=1;
+            % Deblank the ChannelName
+            curr_str = deblank(curr_str);
+            curr_str_flipped = deblank(curr_str(end:-1:1));
+            curr_str = curr_str_flipped(end:-1:1);
+            ch2use(contains(chs,curr_str,'IgnoreCase',true))=1;
         end
 
     else

@@ -1,16 +1,17 @@
 function write_scans_tsv(cfg,metadata,events_tsv,fscans_name,fieeg_json_name)
 
-
-    file_name = fullfile(extractBefore(cfg.outputfile,'ses'),fscans_name);
+    f = replace(fieeg_json_name,'.json','.eeg');
     
-    files = dir(extractBefore(cfg.outputfile,'ses'));
-    if contains([files(:).name],'scans')
+    file_name = fullfile(cfg.sub_dir,fscans_name);
+    
+    files = dir(cfg.sub_dir);
+    if contains([files(:).name],'scans.tsv')
         
         % read existing scans-file
         scans_tsv = read_tsv(file_name);
         
-        if any(contains(extractBefore(scans_tsv.filename,'.vhdr'),extractBefore(fieeg_json_name,'.json')))
-            scansnum = find(contains(extractBefore(scans_tsv.filename,'.vhdr'),extractBefore(fieeg_json_name,'.json')) ==1);
+        if any(contains(scans_tsv.filename,f))
+            scansnum = find(contains(scans_tsv.filename,f) ==1);
         else
             scansnum = size(scans_tsv,1)+1;
         end
@@ -28,7 +29,7 @@ function write_scans_tsv(cfg,metadata,events_tsv,fscans_name,fieeg_json_name)
         scansnum = 1;
     end
     
-    filename{scansnum,1}              = extractAfter(cfg.outputfile,[cfg.proj_dir,extractBefore(fieeg_json_name,'_ses'),'/']); 
+    filename{scansnum,1}              = ['ieeg/' f]; 
     
     % acquisition time
     acq_time{scansnum,1}              = datetime(1900,1,1,...

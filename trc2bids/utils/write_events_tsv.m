@@ -1,6 +1,6 @@
 %% write annotations to a tsv file _events
 
-function events_tsv = write_events_tsv(metadata,cfg)
+function events_tsv = write_events_tsv(metadata,cfg, fevents_name)
 
 %% type / sample start / sample end /  chname;
 ch_label  = metadata.ch_label;
@@ -108,10 +108,7 @@ end
 events_tsv  = table( onset', duration' ,type', ch_name', s_start', s_end', ...
                         'VariableNames',{'onset','duration','trial_type', 'electrodes_involved','sample_start', 'sample_stop'});
 if ~isempty(events_tsv)
-    [p, f, x] = fileparts(cfg.outputfile);
-    
-    filename = fullfile(p, [f '_events.tsv']);
-    filename = replace(filename,'_ieeg','');
+    filename = fullfile(cfg.ieeg_dir,fevents_name);
     if isfile(filename)
         existing = read_tsv(filename);
     else

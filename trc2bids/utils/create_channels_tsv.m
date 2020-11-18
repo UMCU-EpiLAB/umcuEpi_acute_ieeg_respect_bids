@@ -103,13 +103,7 @@ channels_tsv = table(name, type, units,  low_cutoff,    ...
 %% write channels.tsv
 
 if ~isempty(channels_tsv)
-    [p, f, x] = fileparts(cfg.outputfile);
-    % sub-<label>/
-    %[ses-<label>]/
-    %  ieeg/
-    %    [sub-<label>[_ses-<label>]_task-<label>[_run-<index>]_channels.tsv]
-    filename = fullfile(p, [f '_channels.tsv']);
-    filename = replace(filename,'_ieeg','');
+    filename = fullfile(cfg.ieeg_dir,fchannels_name);
         if isfile(filename)
             existing = read_tsv(filename);
         else

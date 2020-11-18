@@ -1,11 +1,11 @@
 function write_participants_tsv(cfg,header,metadata)
 
-    if ~isempty(cfg.proj_dir)
+    if ~isempty(cfg.proj_diroutput)
         
-        filename = fullfile(cfg.proj_dir,'participants.tsv');
+        filename = fullfile(cfg.proj_diroutput,'participants.tsv');
         
         % find session (situation) names 
-        files = dir(extractBefore(cfg.outputfile,'ses'));
+        files = dir(cfg.sub_dir);
         idx_containsses = contains({files.name},'SITUATION');
         containsses = {files(idx_containsses).name};
         containsses = sort(containsses); 
@@ -18,9 +18,9 @@ function write_participants_tsv(cfg,header,metadata)
             end
         end
         
-       files = dir(cfg.proj_dir);
+       files = dir(cfg.proj_diroutput);
         pat_exist = [];
-        if contains([files(:).name],'participants')
+        if contains([files(:).name],'participants.tsv')
             % read existing scans-file
             participants_tsv = read_tsv(filename);
             
@@ -40,6 +40,7 @@ function write_participants_tsv(cfg,header,metadata)
             sex = participants_tsv.sex;
         else
             partnum = 1;
+            pat_exist = 0;
         end
         
         % set RESPect name, included sessions (situations) and sex

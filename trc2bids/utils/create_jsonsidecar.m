@@ -76,8 +76,7 @@ ieeg_json.iEEGElectrodeGroups           = metadata.format_info;
 %% write ieeg.json
 
 if ~isempty(ieeg_json)
-    [p, f, x] = fileparts(cfg.outputfile);
-    filename = fullfile(p, [f '.json']);
+    filename = fullfile(cfg.ieeg_dir,fieeg_json_name);
     if isfile(filename)
         existing = read_json(filename);
     else

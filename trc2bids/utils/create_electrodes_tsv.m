@@ -77,13 +77,7 @@ end
         'VariableNames',{'name', 'x', 'y', 'z', 'size', 'material', 'manufacturer','group','hemisphere', 'silicon' 'cavity','resected','edge'})     ;
 
 if ~isempty(electrodes_tsv)
-    [p, f, x] = fileparts(cfg.outputfile);
-    %sub-<label>/
-    %[ses-<label>]/
-    %  ieeg/
-    %     sub-<label>[_ses-<label>][_space-<label>]_electrodes.tsv
-    filename = fullfile(p, [f '_electrodes.tsv']);
-    filename = replace(filename,'_task-acute_ieeg','');
+    filename = fullfile(cfg.ieeg_dir,felectrodes_name);
     if isfile(filename)
         existing = read_tsv(filename);
     else

@@ -143,8 +143,6 @@ try
         fpic_name = strcat(subses_label,'photo','.jpg');
         fscans_name = strcat(sub_label,'_scans','.tsv');
         
-%         cfg.outputfile = replace(fullfile(ieeg_dir,fieeg_name),'.TRC','.vhdr');
-
         %% create Brainvision format from TRC
         
         convertTRC2brainvision(cfg,ieeg_dir, fieeg_name);      
@@ -196,7 +194,7 @@ try
         
         %% write electrodes descriptor 
         create_elecDesc(fullfile(ieeg_dir,subses_label))
-        
+
         %% write participants descriptor
         create_participantsDesc(cfg.proj_diroutput)
 

@@ -1,2 +1,33 @@
+# no windows stuff in git
+
+desktop.ini
+
+**/desktop.ini
+
+
+
+# No data files
+
+*.mat
+
+
+
+# No matlab backup scripts 
+
 *.m~
+
+*.asv
+
+
+
+# No personalDataPath
+
+personalDataPath.m
+
+personalDataPath_bidsconvert.m
+
+personalDataPath_elecpos.m
+
+personalDataPath_anonymization.m
+
 

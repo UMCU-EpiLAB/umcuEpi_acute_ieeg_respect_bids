@@ -1,5 +1,5 @@
 %% write json coordsystem
-function json_coordsystem(cfg)
+function json_coordsystem(cfg, fcoords_name)
 
 cfg.coordsystem.iEEGCoordinateSystem                = ft_getopt(cfg.coordsystem, 'iEEGCoordinateSystem'               , nan);
 cfg.coordsystem.iEEGCoordinateUnits                 = ft_getopt(cfg.coordsystem, 'iEEGCoordinateUnits'                , nan);
@@ -13,13 +13,7 @@ coordsystem_json.iEEGCoordinateProcessingDescription     = cfg.coordsystem.iEEGC
 coordsystem_json.IntendedFor                             = cfg.coordsystem.IntendedFor                                           ;
 
 if ~isempty(coordsystem_json)
-    [p, f, x] = fileparts(cfg.outputfile);
-    %sub-<label>/
-    %[ses-<label>]/
-    %  ieeg/
-    %     sub-<label>[_ses-<label>][_space-<label>]_coordsystem.json
-    filename = fullfile(p, [f '_coordsystem.json']);
-    filename = replace(filename,'_task-acute_ieeg','');
+    filename = fullfile(cfg.ieeg_dir,fcoords_name);
     
     if isfile(filename)
         existing = read_json(filename);

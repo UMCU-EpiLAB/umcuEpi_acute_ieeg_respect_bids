@@ -1,14 +1,21 @@
 
 function bsuppression = look_for_burst_suppression(annots,sfreq)
+BSstarts={'200','Burstsup_on'};
+BSstops={'201','Burstsup_off'};
 
-BS_Start = '200';
-BS_Stop  = '201';
+start_bs =[];
+end_bs = [];
+for i=numel(BSstarts)
+    BS_Start = BSstarts{i};
+    BS_Stop = BSstops{i};
+    
+    start_bs = [start_bs;find(startsWith(annots(:,2),BS_Start))];
+    end_bs   = [end_bs;find(startsWith(annots(:,2),BS_Stop))];
 
-start_bs = find(startsWith(annots(:,2),BS_Start));
-end_bs   = find(startsWith(annots(:,2),BS_Stop));
 
-if(length(start_bs) ~= length(end_bs))
-    error('burst suppression: starts and ends did no match')
+    if(length(start_bs) ~= length(end_bs))
+        error('burst suppression: starts and ends did no match')
+end
 end
 
 bsuppression = cell(size(start_bs));

@@ -5,7 +5,7 @@
 
 % respect-folder on bulkstorage
 % or other scratch folder
-patterns={};
+
 
 %% RESPECT name ---------------------------------------------------------
 tempName = input('Respect name (e.g. [RESP0733]): ','s');
@@ -26,12 +26,6 @@ if cfg.copymethod
 end
 
 %% ask for respnumbers
-% answer=inputdlg('Patterns to search for', 'Search header for patterns?',6);
-% 
-% for h=size(answer{1},1):-1:1
-%     patterns{h}=strtrim(answer{1}(h,:));
-% end
-
 if strcmp(tempName,'') && ~isempty(respName)
     
 elseif contains(tempName,'RESP')
@@ -55,7 +49,7 @@ for i=1:size(files,1)
         
         % anonymize the TRC file    
         fprintf('Anonymising: %s\n',filename);
-        [status,msg] = anonymized_asRecorded(fileName,respName,patterns)
+        [status,msg] = anonymized_asRecorded(fileName,respName)
         
         % overwrite and clear temp directory
         if cfg.copymethod && ~status

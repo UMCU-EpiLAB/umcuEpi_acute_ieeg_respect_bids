@@ -11,7 +11,28 @@ if ~isempty(varargin{1})
     if isstruct(varargin{1})
         if strcmp(varargin{1}.mode,'anonymization')
             
-            cfg.proj_dirinput = '/folder/to/copies/trc-files/temp_ecog/';
+            cfg.proj_dirinput = '~/RESPsand/RESPect_scratch/Archive Micromed/';
+            % cfg.proj_dirinput = '/folder/to/copies/trc-files/temp_ecog/';
+            
+            % check whether remote location (samba share)
+                tempfiles = dir(cfg.proj_dirinput);
+                assert(~isempty(tempfiles),'Cannot locate files, check if (remote) directory (e.g. RESPsand) was properly mounted.');
+                cfg.copymethod = contains(tempfiles(1).folder,'smb'); % true if samba share
+                
+            if isfield(cfg,'copymethod') && cfg.copymethod==true
+                tempPat = input('Pat folder number in scratch (PAT_XX): ','s');
+                if contains(tempPat,'PAT_')
+                    cfg.proj_dirinput=fullfile(cfg.proj_dirinput,tempPat,filesep);
+                    cfg.files = dir(cfg.proj_dirinput);
+                    assert(~isempty(cfg.files),'Cannot locate files, check if (remote) directory (e.g. RESPsand) was properly mounted.');
+                else
+                    error('PAT_XX not entered correctly')
+                end
+            else
+                if cfg.proj_dirinput(end) ==filesep; else cfg.proj_dirinput=[cfg.proj_dirinput filesep]; end
+                cfg.files = tempfiles;
+            end
+            
             tempName = varargin{1}.sub_labels{:};
             
             % check whether RESP-number is entered correctly
@@ -23,6 +44,7 @@ if ~isempty(varargin{1})
                 error('RESPect name is not correct')
             end
             
+        
         else
             if sum(contains(fieldnames(varargin{1}),'sub_labels'))
                 % for conversion trc-file to BIDS
@@ -62,7 +84,7 @@ if ~isempty(varargin{1})
     addpath(fieldtrip_folder)
     addpath(fieldtrip_private)
     addpath(jsonlab_folder)
-    ft_defaults
+    %ft_defaults
     
     
 end

@@ -30,7 +30,6 @@
 %     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 function [status,msg] = anonymized_asRecorded(fileName,respName,patterns)
-addpath('./functions/');
 status = 0; %ok
 msg    = '';%ok
 try

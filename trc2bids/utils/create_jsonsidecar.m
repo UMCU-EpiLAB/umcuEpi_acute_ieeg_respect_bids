@@ -32,6 +32,10 @@ elseif strcmp(header.acquisition_eq,'SD128')
 elseif strcmp(header.acquisition_eq,'SD64')
     ieeg_json.HardwareFilters.HighpassFilter.CutoffFrequency    = 0.15;
     ieeg_json.HardwareFilters.LowpassFilter.CutoffFrequency     = round(header.Rate_Min/3.81);
+
+elseif strcmp(header.acquisition_eq,'FLEXI')
+    ieeg_json.HardwareFilters.HighpassFilter.CutoffFrequency    = 0.11;
+    ieeg_json.HardwareFilters.LowpassFilter.CutoffFrequency     = round(0.27*header.Rate_Min);
     
 end
 

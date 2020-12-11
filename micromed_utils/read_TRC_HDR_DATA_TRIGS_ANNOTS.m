@@ -138,6 +138,8 @@ switch acquisition_eq
         acquisition_eq = 'LTM128 Express';
     case 50
         acquisition_eq = 'LTM256 Express';
+    case 56
+        acquisition_eq = 'FLEXI';
 end
 header.acquisition_eq = acquisition_eq;
 

@@ -56,6 +56,8 @@ try
     [header,data,data_time,trigger,annots] = read_TRC_HDR_DATA_TRIGS_ANNOTS(filename);
     
     if(isempty(header) || isempty(data) || isempty(data_time) || isempty(trigger) || isempty(annots))
+        output = [];
+        msg = 'TRC reading failed';
         error('TRC reading failed')  ;
     end 
     

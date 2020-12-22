@@ -159,6 +159,8 @@ for iChan = 1 : header.Num_Chan
             header.elec(iChan).Unit = 'bpm';
         case 102
             header.elec(iChan).Unit = 'Adim.';
+        otherwise 
+            header.elec(iChan).Unit = {''};
     end
     % pre-filtering
     fseek(fid,ElecOff+128*vOrder(iChan)+36,'bof');

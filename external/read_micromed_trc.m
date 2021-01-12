@@ -130,7 +130,7 @@ ElecOff = fread(fid,1,'ulong');
 for iChan = 1 : header.Num_Chan
     fseek(fid,ElecOff+128*vOrder(iChan),'bof');
     if ~fread(fid,1,'uchar'), continue; end
-    fseek(fid,-1,0);
+%     fseek(fid,-1,0);
     header.elec(iChan).bip = fread(fid,1,'uchar');
     temp = deblank(char(fread(fid,6,'uchar'))');
     temp_flipped = deblank(temp(end:-1:1));

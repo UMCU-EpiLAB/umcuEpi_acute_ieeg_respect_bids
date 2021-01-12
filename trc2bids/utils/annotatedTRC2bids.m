@@ -7,7 +7,7 @@
 %  output structure with some information about the subject
 %  output.subjName - name of the subject
 % 
-% The following functions rely and take inspiration on fieltrip data2bids.m  function
+% The following functions rely and take inspiration on fieldtrip data2bids.m  function
 % (https://github.com/fieldtrip/fieldtrip.git)
 % 
 % fieldtrip toolbox should be on the path (plus the fieldtrip_private folder)

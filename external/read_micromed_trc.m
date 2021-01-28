@@ -130,7 +130,6 @@ ElecOff = fread(fid,1,'ulong');
 for iChan = 1 : header.Num_Chan
     fseek(fid,ElecOff+128*vOrder(iChan),'bof');
     if ~fread(fid,1,'uchar'), continue; end
-%     fseek(fid,-1,0);
     header.elec(iChan).bip = fread(fid,1,'uchar');
     temp = deblank(char(fread(fid,6,'uchar'))');
     temp_flipped = deblank(temp(end:-1:1));
@@ -160,7 +159,7 @@ for iChan = 1 : header.Num_Chan
         case 102
             header.elec(iChan).Unit = 'Adim.';
         otherwise 
-            header.elec(iChan).Unit = {''};
+            ft_error('*.trc file contains invalid unit for electrode "%s"',header.elec(iChan).Name);
     end
     % pre-filtering
     fseek(fid,ElecOff+128*vOrder(iChan)+36,'bof');

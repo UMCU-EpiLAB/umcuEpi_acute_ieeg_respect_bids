@@ -162,8 +162,9 @@ try
         create_electrodes_tsv(cfg,metadata,header,felec_name)
         
         %% create coordsystem.json
-        cfg.coordsystem.iEEGCoordinateSystem                = 'pixel'   ;
-        cfg.coordsystem.iEEGCoordinateUnits                 = 'pixel'   ;
+        cfg.coordsystem.iEEGCoordinateSystem                = 'Other'   ;
+        cfg.coordsystem.iEEGCoordinateUnits                 = 'mm'   ;
+        cfg.coordsystem.iEEGCoordinateSystemDescription     = 'The origin of the coordinate system is between the ears and the axis are in the RAS direction. The scaling is with respect to the individuals anatomical scan and no scaling or deformation have been applied to the individuals anatomical scan';
         cfg.coordsystem.iEEGCoordinateProcessingDescription = 'none'    ;
         cfg.coordsystem.IntendedFor                         =  fpic_name;                
 
@@ -196,6 +197,9 @@ try
         
         %% write electrodes descriptor 
         create_elecDesc(fullfile(ieeg_dir,subses_label))
+        
+        %% write channels descriptor
+        create_chanDesc(fullfile(ieeg_dir,subses_label))
 
         %% write participants descriptor
         create_participantsDesc(cfg.proj_diroutput)

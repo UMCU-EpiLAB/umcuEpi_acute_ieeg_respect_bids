@@ -2,7 +2,9 @@
 function create_elecDesc(proj_dir,cfg)
 
 elecdesc_json.name                  = 'Name of the electrode';
-elecdesc_json.x_y_z                 = 'X, y and z position of the electrode on the brain of the subject; set to 0';
+elecdesc_json.x                     = 'X position of the electrode on the brain of the subject; set to 0';
+elecdesc_json.y                     = 'Y position of the electrode on the brain of the subject; set to 0';
+elecdesc_json.z                     = 'Z position of the electrode on the brain of the subject; set to 0';
 elecdesc_json.size                  = 'Surface size in mm2 of the electrode';
 elecdesc_json.material              = 'Material of the electrode. This is platinum in most situations';
 elecdesc_json.manufacturer          = 'Manufacturer of the electrode';

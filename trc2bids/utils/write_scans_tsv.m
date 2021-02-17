@@ -29,7 +29,7 @@ function write_scans_tsv(cfg,metadata,events_tsv,fscans_name,fieeg_json_name)
         scansnum = 1;
     end
     
-    filename{scansnum,1}              = ['ieeg/' f]; 
+    filename{scansnum,1}              = [cfg.ieeg_dir(length(cfg.sub_dir)+2:end),'/' f]; 
     
     % acquisition time
     acq_time{scansnum,1}              = datetime(1900,1,1,...

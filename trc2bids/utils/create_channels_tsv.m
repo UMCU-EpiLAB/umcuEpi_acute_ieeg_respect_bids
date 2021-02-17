@@ -94,11 +94,12 @@ notch                               = repmat('n/a',header.Num_Chan, 1);
 [ch_status,ch_status_desc]          = status_and_description(metadata);
 status                              = ch_status;
 status_description                  = ch_status_desc;
+chan_recording                      = num2cell(header.Chan_Rec_Numbers);
 
 %% make channels_tsv
 channels_tsv = table(name, type, units,  low_cutoff,    ...
     high_cutoff, reference, group, sampling_frequency,   ...
-    notch, status, status_description);
+    notch, status, status_description,chan_recording);
 
 %% write channels.tsv
 

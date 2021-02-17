@@ -159,5 +159,12 @@ header.file_type = file_type;
 % 
 % header.header_type=fread(f,1,'uchar');
 
+%---------CHANNEL INFO------------------------------
+
+fseek(f,header.Code_Area,-1);
+code=fread(f,header.Num_Chan,'uint16');
+
+header.Chan_Rec_Numbers = code;
+
 
 fclose(f);

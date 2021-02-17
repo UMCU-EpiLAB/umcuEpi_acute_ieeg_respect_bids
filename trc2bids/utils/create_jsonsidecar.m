@@ -43,8 +43,8 @@ ieeg_json.Manufacturer                  = 'Micromed';
 ieeg_json.ManufacturersModelName        = header.acquisition_eq;
 ieeg_json.TaskDescription               = task_desc;
 ieeg_json.Instructions                  = 'No instruction is given';
-ieeg_json.CogAtlasID                    = 'n/a';
-ieeg_json.CogPOID                       = 'n/a';
+% ieeg_json.CogAtlasID                    = 'n/a';
+% ieeg_json.CogPOID                       = 'n/a';
 
 ieeg_json.InstitutionName             = 'University Medical Center Utrecht, Division Brain, Clinical Neurophysiology Department';
 ieeg_json.InstitutionAddress          = 'Heidelberglaan 100, 3584 CX Utrecht';

@@ -2,12 +2,14 @@
 function json_coordsystem(cfg, fcoords_name)
 
 cfg.coordsystem.iEEGCoordinateSystem                = ft_getopt(cfg.coordsystem, 'iEEGCoordinateSystem'               , nan);
+cfg.coordsystem.iEEGCoordinateSystemDescription     = ft_getopt(cfg.coordsystem, 'iEEGCoordinateSystemDescription'    , nan);
 cfg.coordsystem.iEEGCoordinateUnits                 = ft_getopt(cfg.coordsystem, 'iEEGCoordinateUnits'                , nan);
 cfg.coordsystem.iEEGCoordinateProcessingDescription = ft_getopt(cfg.coordsystem, 'iEEGCoordinateProcessingDescription', nan);
-cfg.coordsystem.IntendedFor                         = ft_getopt(cfg.coordsystem, 'IntendedFor'                         ,nan);  
+cfg.coordsystem.IntendedFor                         = ft_getopt(cfg.coordsystem, 'IntendedFor'                        , nan);  
 
 coordsystem_json=[];
 coordsystem_json.iEEGCoordinateSystem                    = cfg.coordsystem.iEEGCoordinateSystem                                  ;
+coordsystem_json.iEEGCoordinateSystemDescription         = cfg.coordsystem.iEEGCoordinateSystemDescription                       ;
 coordsystem_json.iEEGCoordinateUnits                     = cfg.coordsystem.iEEGCoordinateUnits                                   ;
 coordsystem_json.iEEGCoordinateProcessingDescription     = cfg.coordsystem.iEEGCoordinateProcessingDescription                   ;
 coordsystem_json.IntendedFor                             = cfg.coordsystem.IntendedFor                                           ;

@@ -89,8 +89,9 @@ try
 
         ses_label     = strcat('ses-',upper(replace(deblank(metadata.sit_name),' ','')));
         task_label    = strcat('task-',strtrim(metadata.task_name),' ','');
-        metadata.hour = header.hour; metadata.min = header.min; metadata.sec = header.sec; % this is needed for acq_time in scans.tsv
-
+        metadata.recyear = header.recyear; metadata.recmonth = header.recmonth; metadata.recday = header.recday; metadata.Rate_Min = header.Rate_Min;
+        metadata.hour = header.hour; metadata.min = header.min; metadata.sec = header.sec; metadata.reductions = header.reductions; % this is needed for acq_time in scans.tsv
+        
         %subject directions
         sub_dir       = fullfile(cfg.proj_diroutput,sub_label);
         ses_dir       = fullfile(cfg.proj_diroutput,sub_label,ses_label);

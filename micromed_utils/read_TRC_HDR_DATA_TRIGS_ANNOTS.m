@@ -119,7 +119,11 @@ while 1
     i=i+1;
 end
 
-
+% if isempty('reductions')
+header.reductions = reductions;
+% else 
+%     header.reductions = 0;
+% end
 
 %---------ACQUISITION EQUIPMENT------------------------------
 fseek(f,134,-1);

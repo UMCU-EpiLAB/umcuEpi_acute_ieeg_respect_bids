@@ -35,9 +35,9 @@ function write_scans_tsv(cfg,metadata,events_tsv,fscans_name,fieeg_json_name)
     time_original                     = datetime(metadata.recyear,metadata.recmonth,metadata.recday,...
         str2double(metadata.hour),str2double(metadata.min),str2double(metadata.sec),'Format','yyyy-MM-dd''T''HH:mm:ss.SSSSSSS'); 
     if isempty(metadata.reductions)
-        acq_time{scansnum,1}              = time_original;
+        acq_time(scansnum,1)              = time_original;
     else
-        acq_time{scansnum,1}              = time_original + seconds(metadata.reductions(1,1)/metadata.Rate_Min);
+        acq_time(scansnum,1)              = time_original + seconds(metadata.reductions(1,1)/metadata.Rate_Min);
     end
     
     % good data segments

@@ -125,7 +125,7 @@ for pat = 1:size(pats,1)
     
     if contains(pats(pat).name,'PAT')
         n = 1;
-        cfg.pathname = [fullfile(dbdir,pats(pat).name),'/'];
+        cfg.pathname = [fullfile(cfg.proj_dirinput,pats(pat).name),'/'];
         
         files = dir(cfg.pathname);
         

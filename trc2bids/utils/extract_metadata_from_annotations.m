@@ -51,12 +51,20 @@ try
     end
     metadata.ch2use_included = single_annotation(annots,'Included',ch);
     
-    % good data segments
+    %% good data segments
     
     %Codes for start and stop of good segments
     BEG_GS = 222;
     END_GS = 223;
     
+    %notes as substitute triggers
+    notetrig=look_for_good_segment_notes(annots,sfreq,num2str(BEG_GS),num2str(END_GS));
+    trigsubs=zeros(2,0)
+    for j=1:numel(notetrig)
+        trigsubs=[trigsubs,[notetrig{j}.pos.*sfreq;BEG_GS,END_GS]];
+    end
+    trigger=[trigger, trigsubs];   
+
     trig_pos  = trigger(1,:);
     trig_v    = trigger(2,:);
 

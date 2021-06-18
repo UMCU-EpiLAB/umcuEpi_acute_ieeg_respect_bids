@@ -32,8 +32,13 @@ function write_scans_tsv(cfg,metadata,events_tsv,fscans_name,fieeg_json_name)
     filename{scansnum,1}              = [cfg.ieeg_dir(length(cfg.sub_dir)+2:end),'/' f]; 
     
     % acquisition time
-    acq_time{scansnum,1}              = datetime(1900,1,1,...
-        str2double(metadata.hour),str2double(metadata.min),str2double(metadata.sec),'Format','yyyy-MM-dd''T''HH:mm:ss'); 
+    time_original                     = datetime(metadata.recyear,metadata.recmonth,metadata.recday,...
+        str2double(metadata.hour),str2double(metadata.min),str2double(metadata.sec),'Format','yyyy-MM-dd''T''HH:mm:ss.SSSSSSS'); 
+    if isempty(metadata.reductions)
+        acq_time(scansnum,1)              = time_original;
+    else
+        acq_time(scansnum,1)              = time_original + seconds(metadata.reductions(1,1)/metadata.Rate_Min);
+    end
     
     % good data segments
     id_good = strcmp(events_tsv.trial_type,'good data segment');

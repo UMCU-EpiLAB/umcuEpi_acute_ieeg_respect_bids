@@ -20,6 +20,7 @@ cfg = setLocalDataPath(cfg);
 % 2)  run one single file instead of all files within the input directory
 % 3a) run all patients in database
 % 3b) run files which gave errors again
+% 4a) run files off list of patient folders
 
 %% 1a) run all files in patient-folder
 
@@ -224,4 +225,72 @@ for i=1:size(runpat,2)
     end
 end
     
+disp(['The number of patients with at least one error is ', num2str(sum([runpat(:).status]))]);
+
+%% 4a)
+runpat = struct;
+cfg.runall=1;
+% 36,44,61,294,84,89,92,94,95,103,111,117,118,132,147,149,150,154,158,159,166,171,174,
+% 196,199,216,217,222,233,265,267,270,275,277,279,293,292,289,288,287,286
+runs = [172, 356 354 183 184 332 360 333 342 321 329 317 193 334 198 343 ...
+    204 212 215 242]; %[35,36,44,61,294,84,89,92,94,95,103,111,117,118,132,147,149,150,154,158,159,166,171,174, ...
+    %196,199,216,217,222,233,265,267,270,275,277,279,293,292,289,288,287,286];
+for pat = 1:length(runs)
+    
+        n = 1;
+        cfg.pathname = [fullfile(cfg.proj_dirinput,['/PAT_',num2str(runs(pat))]),'/'];
+        
+        files = dir(cfg.pathname);
+        
+        if size(files,1)<1
+            error('Pathname is wrong, no files found')
+        end
+        
+        % run all files within your input directory
+        for i=1:size(files,1)
+            runpat(pat).runall(i).file = files(i).name;
+            if contains(files(i).name,'EEG_')
+                
+                cfg.filename = fullfile(cfg.pathname,files(i).name);
+                
+                pathsplit = strsplit(cfg.pathname,{'/'});
+                patient = pathsplit{end-1};
+                filesplit = strsplit(files(i).name,{'_','.TRC'});
+                file = filesplit{end-1};
+                
+                fprintf('Running %s, writing EEG: %s to BIDS \n', patient,file)
+                [runpat(pat).runall(i).status,runpat(pat).runall(i).msg,runpat(pat).runall(i).output] = annotatedTRC2bids(cfg,n);
+                
+                n = n+1;
+            end
+        end
+        
+        if any([runpat(pat).runall(:).status])
+            disp('All runs are done, but some still have errors. Fix them manually!')
+        else
+            disp('All runs are completed')
+        end
+end
+
+% check which patients do not run without errors
+if contains(fieldnames(runpat),'status')
+    runpat = rmfield(runpat, 'status');
+end
+
+for i=1:size(runpat,2)
+    
+    if ~isempty(runpat(i).runall)
+        
+        if any(vertcat(runpat(i).runall(:).status) == 1)
+            
+            runpat(i).status = 1;
+            
+        else
+            runpat(i).status = 0;
+            
+            
+        end
+    end
+end
+
 disp(['The number of patients with at least one error is ', num2str(sum([runpat(:).status]))]);

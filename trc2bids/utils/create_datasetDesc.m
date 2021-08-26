@@ -34,7 +34,21 @@ elseif contains(sub_label,'REC2Stim')
     ddesc_json.Funding            = {'Epilepsiefonds #17-07'} ;
     ddesc_json.ReferencesAndLinks = {'articles and/or links'};
     ddesc_json.DatasetDOI         = 'DOI of the dataset if online';
+
+else     
+    warning('Study/dataset unknown, add dataset description to trc2bids/utils/create_datasetDesc.m')
+    ddesc_json.Name               = 'TBD' ;
+    ddesc_json.BIDSVersion        = 'BEP010' ;
+    ddesc_json.License            = 'Not licenced yet' ;
+    ddesc_json.Authors            = {'TBD'};
+    ddesc_json.Acknowledgements   = 'TBD' ;
+    ddesc_json.HowToAcknowledge   = 'TBD' ;
+    ddesc_json.Funding            = {'TBD'} ;
+    ddesc_json.ReferencesAndLinks = {'TBD'} ;
+    ddesc_json.DatasetDOI         = 'TBD';
 end
+
+
 
 if ~isempty(ddesc_json)
     

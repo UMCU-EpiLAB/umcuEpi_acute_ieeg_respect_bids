@@ -41,7 +41,10 @@ for i=2:numel(C)
     if(~isempty(curr_str))
         if(contains(curr_str,'[') || contains(curr_str,']') ) %it is a ChannelSubset
             ch_subset_str=parse_ch_subset(curr_str,chs);
-            ch2use(contains(chs,ch_subset_str,'IgnoreCase',true))=1;
+            for jj = 1:numel(ch_subset_str)
+                ch2use = ch2use | strcmp(chs,ch_subset_str{jj});
+            end
+%             ch2use(contains(chs,ch_subset_str,'IgnoreCase',true))=1;
         else % ChannelName
             % Deblank the ChannelName
             curr_str = deblank(curr_str);

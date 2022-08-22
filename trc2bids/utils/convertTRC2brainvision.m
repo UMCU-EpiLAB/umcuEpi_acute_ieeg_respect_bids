@@ -29,4 +29,13 @@ temp.ieeg.writesidecar = 'no';
 % write .vhdr, .eeg, .vmrk
 data2bids(temp, data2write)
 
+% fix group permissions
+newFiles=replace(temp.outputfile,'vhdr','*');
+try
+    fileattrib(newFiles,'+w','g')
+    %disp('vhdr,eeg,vmrk file permissions in output directory set for group')
+catch
+    warning('Could not automatically set group permissions. /n Check permissions for files %s', newFiles)
+end
+
 end

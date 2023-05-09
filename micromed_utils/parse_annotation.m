@@ -49,7 +49,7 @@ for i=2:numel(C)
             curr_str = deblank(curr_str);
             curr_str_flipped = deblank(curr_str(end:-1:1));
             curr_str = curr_str_flipped(end:-1:1);
-            ch2use(contains(chs,curr_str,'IgnoreCase',true))=1;
+            ch2use = ch2use | strcmpi(chs,curr_str);
         end
 
     else

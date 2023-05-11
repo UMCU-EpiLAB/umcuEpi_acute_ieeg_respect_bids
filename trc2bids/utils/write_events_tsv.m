@@ -57,6 +57,25 @@ if(~isempty(bsuppression))
     end
 end
 
+
+%% stimulation
+stimulation = metadata.stimulation;
+
+if(~isempty(stimulation))
+    for i=1:numel(stimulation)
+
+        type{cc}     = 'stimulation'                       ;
+        s_start{cc}  = num2str(stimulation{i}.pos(1) * metadata.sfreq)       ;
+        s_end{cc}    = num2str(stimulation{i}.pos(end) * metadata.sfreq )    ;
+        ch_name{cc}  = 'all';
+        onset{cc}    = num2str(stimulation{i}.pos(1));
+        duration{cc} = num2str(stimulation{i}.pos(end)-stimulation{i}.pos(1));
+           
+        cc          = cc + 1                               ;
+
+    end
+end
+
 %% addnotes
 addnotes = metadata.add_notes;
 

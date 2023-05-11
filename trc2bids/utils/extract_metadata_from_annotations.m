@@ -58,8 +58,8 @@ try
     END_GS = 223;
     
     %notes as substitute triggers
-    notetrig=look_for_good_segment_notes(annots,sfreq,num2str(BEG_GS),num2str(END_GS));
-    trigsubs=zeros(2,0)
+    notetrig=look_for_segment_notes(annots,sfreq,num2str(BEG_GS),num2str(END_GS));
+    trigsubs=zeros(2,0);
     for j=1:numel(notetrig)
         trigsubs=[trigsubs,[notetrig{j}.pos.*sfreq;BEG_GS,END_GS]];
     end
@@ -209,7 +209,13 @@ try
     
     
     %% look for burst suppression
-    metadata.bsuppression = look_for_burst_suppression(annots,sfreq);
+    BSstarts={'200','Burstsup_on'};
+    BSstops={'201','Burstsup_off'};
+    metadata.bsuppression = look_for_segment_notes(annots,sfreq,BSstarts,BSstops);
+
+    %% look for stimulation
+    metadata.stimulation = look_for_segment_notes(annots,sfreq,{'Stim_on;'},{'Stim_off'});
+    
     
     %% add triggers
     metadata.trigger.pos  = trigger(1,:) / sfreq  ;

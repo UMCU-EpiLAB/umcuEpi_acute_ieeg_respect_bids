@@ -203,10 +203,10 @@ try
     
     %% look for odd behaviour in the recordings additional notes
     % Codes for start and stop of segments with 'odd behavior' 
-    ODD_Start = 'vvv';
-    ODD_STOP  = 'www';
     metadata.add_notes = look_for_annotation_start_stop(annots,'vvv','www',ch,sfreq);
     
+    %% look for Pulsation artefacts:
+    metadata.pulsation = look_for_annotation_start_stop(annots,'Puls_on','Puls_off',ch,sfreq);
     
     %% look for burst suppression
     BSstarts={'200','Burstsup_on'};
@@ -215,7 +215,6 @@ try
 
     %% look for stimulation
     metadata.stimulation = look_for_segment_notes(annots,sfreq,{'Stim_on;'},{'Stim_off'});
-    
     
     %% add triggers
     metadata.trigger.pos  = trigger(1,:) / sfreq  ;

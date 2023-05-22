@@ -183,16 +183,26 @@ try
     end
     
     %% Look for resected and edge channels 
-    resected_required = regexpi(metadata.sit_name,'situation 1.');
-    if(resected_required)
-        %% look for resected channels
+%     resected_required = regexpi(metadata.sit_name,'situation 1.');
+%     if(resected_required)
+    %% look for resected channels
+    statusResected = 0;
+    statusResected = 0;
+    try
         metadata.ch2use_resected = single_annotation(annots,'Resected',ch);
-        %% look for edges channels
-        metadata.ch2use_edge    = single_annotation(annots,'Edge',ch);
-    else
+    catch
+        statusResected = 1;
         metadata.ch2use_resected = [];
-        metadata.ch2use_edge    = [];
+        warning('No Resected annotation found, this should be the last situation')
     end
+    try
+        metadata.ch2use_edge    = single_annotation(annots,'Edge',ch);
+    catch
+        statusEdge = 1;
+        metadata.ch2use_edge    = [];
+        warning('No Edge annotation found')
+    end
+
     
     %% Look for channel level artefacts
     %Codes for start and stop of channel level artefacts

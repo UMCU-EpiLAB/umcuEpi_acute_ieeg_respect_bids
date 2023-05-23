@@ -186,19 +186,15 @@ try
 %     resected_required = regexpi(metadata.sit_name,'situation 1.');
 %     if(resected_required)
     %% look for resected channels
-    statusResected = 0;
-    statusResected = 0;
     try
         metadata.ch2use_resected = single_annotation(annots,'Resected',ch);
     catch
-        statusResected = 1;
         metadata.ch2use_resected = [];
         warning('No Resected annotation found, this should be the last situation')
     end
     try
         metadata.ch2use_edge    = single_annotation(annots,'Edge',ch);
     catch
-        statusEdge = 1;
         metadata.ch2use_edge    = [];
         warning('No Edge annotation found')
     end

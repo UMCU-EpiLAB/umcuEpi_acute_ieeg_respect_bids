@@ -39,6 +39,31 @@ if(~isempty(artefact))
         end
     end
 end
+
+%% Pulsation artefacts
+pulsation = metadata.pulsation;
+
+if(~isempty(pulsation))
+    for i = 1 : numel(pulsation)
+        
+        curr_ch = pulsation{i}.ch_names;
+        if(isempty(curr_ch))
+                error('pulsation channel name wrong')
+        end
+        
+        for j = 1 : numel(curr_ch)
+            
+            type{cc}     = 'pulsation'                           ;
+            s_start{cc}  = num2str(pulsation{i}.pos(1) * metadata.sfreq)           ; %sample
+            s_end{cc}    = num2str(pulsation{i}.pos(end) * metadata.sfreq )        ; %sample
+            ch_name{cc}  = curr_ch{j}; 
+            onset{cc}    = num2str(pulsation{i}.pos(1)); %time in sec
+            duration{cc} = num2str(pulsation{i}.pos(end)-pulsation{i}.pos(1)); %time in sec
+            
+            cc          = cc + 1                               ;
+        end
+    end
+end
 %% bsuppression
 bsuppression = metadata.bsuppression;
 
@@ -51,6 +76,25 @@ if(~isempty(bsuppression))
         ch_name{cc}  = 'all';
         onset{cc}    = num2str(bsuppression{i}.pos(1));
         duration{cc} = num2str(bsuppression{i}.pos(end)-bsuppression{i}.pos(1));
+           
+        cc          = cc + 1                               ;
+
+    end
+end
+
+
+%% stimulation
+stimulation = metadata.stimulation;
+
+if(~isempty(stimulation))
+    for i=1:numel(stimulation)
+
+        type{cc}     = 'stimulation'                       ;
+        s_start{cc}  = num2str(stimulation{i}.pos(1) * metadata.sfreq)       ;
+        s_end{cc}    = num2str(stimulation{i}.pos(end) * metadata.sfreq )    ;
+        ch_name{cc}  = 'all';
+        onset{cc}    = num2str(stimulation{i}.pos(1));
+        duration{cc} = num2str(stimulation{i}.pos(end)-stimulation{i}.pos(1));
            
         cc          = cc + 1                               ;
 

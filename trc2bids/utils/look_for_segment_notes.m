@@ -1,5 +1,5 @@
 
-function triggersub = look_for_good_segment_notes(annots,sfreq,segstarts,segstops)
+function triggersub = look_for_segment_notes(annots,sfreq,segstarts,segstops)
 
 if ~iscell(segstarts),segstarts={segstarts};end
 if ~iscell(segstops),segstops={segstops};end
@@ -15,8 +15,8 @@ for i=numel(segstarts)
 
 
     if(length(start_seg) ~= length(end_seg))
-        error('trigger substitute notes: starts and ends did no match')
-end
+        error([start_seg, ' notes: starts and ends did no match'])
+    end
 end
 
 triggersub = cell(size(start_seg));

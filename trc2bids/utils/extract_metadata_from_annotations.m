@@ -58,8 +58,8 @@ try
     END_GS = 223;
     
     %notes as substitute triggers
-    notetrig=look_for_good_segment_notes(annots,sfreq,num2str(BEG_GS),num2str(END_GS));
-    trigsubs=zeros(2,0)
+    notetrig=look_for_segment_notes(annots,sfreq,num2str(BEG_GS),num2str(END_GS));
+    trigsubs=zeros(2,0);
     for j=1:numel(notetrig)
         trigsubs=[trigsubs,[notetrig{j}.pos.*sfreq;BEG_GS,END_GS]];
     end
@@ -183,16 +183,22 @@ try
     end
     
     %% Look for resected and edge channels 
-    resected_required = regexpi(metadata.sit_name,'situation 1.');
-    if(resected_required)
-        %% look for resected channels
+%     resected_required = regexpi(metadata.sit_name,'situation 1.');
+%     if(resected_required)
+    %% look for resected channels
+    try
         metadata.ch2use_resected = single_annotation(annots,'Resected',ch);
-        %% look for edges channels
-        metadata.ch2use_edge    = single_annotation(annots,'Edge',ch);
-    else
+    catch
         metadata.ch2use_resected = [];
-        metadata.ch2use_edge    = [];
+        warning('No Resected annotation found, this should be the last situation')
     end
+    try
+        metadata.ch2use_edge    = single_annotation(annots,'Edge',ch);
+    catch
+        metadata.ch2use_edge    = [];
+        warning('No Edge annotation found')
+    end
+
     
     %% Look for channel level artefacts
     %Codes for start and stop of channel level artefacts
@@ -203,13 +209,18 @@ try
     
     %% look for odd behaviour in the recordings additional notes
     % Codes for start and stop of segments with 'odd behavior' 
-    ODD_Start = 'vvv';
-    ODD_STOP  = 'www';
     metadata.add_notes = look_for_annotation_start_stop(annots,'vvv','www',ch,sfreq);
     
+    %% look for Pulsation artefacts:
+    metadata.pulsation = look_for_annotation_start_stop(annots,'Puls_on','Puls_off',ch,sfreq);
     
     %% look for burst suppression
-    metadata.bsuppression = look_for_burst_suppression(annots,sfreq);
+    BSstarts={'200','Burstsup_on'};
+    BSstops={'201','Burstsup_off'};
+    metadata.bsuppression = look_for_segment_notes(annots,sfreq,BSstarts,BSstops);
+
+    %% look for stimulation
+    metadata.stimulation = look_for_segment_notes(annots,sfreq,{'Stim_on;'},{'Stim_off'});
     
     %% add triggers
     metadata.trigger.pos  = trigger(1,:) / sfreq  ;

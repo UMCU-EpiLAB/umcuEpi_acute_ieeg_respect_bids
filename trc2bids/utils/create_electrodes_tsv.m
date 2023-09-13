@@ -39,10 +39,10 @@ resected                                  = repmat({'n/a'},header.Num_Chan,1);
 edge                                      = repmat({'n/a'},header.Num_Chan,1); 
 
 if(any(metadata.ch2use_included))
-    [e_size{metadata.ch2use_included}]        = deal('4.2');
+    [e_size{metadata.ch2use_included}]        = deal(metadata.electrode_size);
     [material{metadata.ch2use_included}]      = deal('Platinum');
     
-    [manufacturer{metadata.ch2use_included}]  = deal('Ad-Tech')     ;                                                                               ;
+    [manufacturer{metadata.ch2use_included}]  = deal(metadata.electrode_manufacturer);                                                                               ;
 
     if strcmpi(metadata.hemisphere,'left')
         [hemisphere{metadata.ch2use_included}]    = deal('L');

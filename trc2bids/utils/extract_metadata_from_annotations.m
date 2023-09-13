@@ -87,11 +87,19 @@ try
     end
     
     %% ---------- ELECTRODE MODEL ----------
-    elecmodel_idx=cellfun(@(x) contains(x,{'Elec_model'}),annots(:,2));
-    if(sum(elecmodel_idx)==0)
-        metadata.electrode_manufacturer = 'AdTech'; %Elec_model is only annotated if something else than AdTech electrodes are used
+    elecmodel_idx=cellfun(@(x) contains(x,{'Elec'}),annots(:,2));
+    if sum(elecmodel_idx)==0
+        metadata.electrode_manufacturer = 'AdTech';
+        metadata.electrode_size = '4.2';
+    
+    elseif sum(elecmodel_idx)==1
+        annotElecSplit = split(annots{elecmodel_idx,2},';');
+        metadata.electrode_manufacturer = annotElecSplit{2};
+        metadata.electrode_size = annotElecSplit{3};
+
     else
-        metadata = look_for_electrode_manufacturer(metadata,elecmodel_idx,annots);
+        error("Please annotate only one 'Elec;manufacturer;elec_size'")
+
     end
     
     %% ---------- GENDER ----------

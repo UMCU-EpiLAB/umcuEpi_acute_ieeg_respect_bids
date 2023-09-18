@@ -6,6 +6,7 @@ elecdesc_json.x                     = 'X position of the electrode on the brain 
 elecdesc_json.y                     = 'Y position of the electrode on the brain of the subject; set to 0';
 elecdesc_json.z                     = 'Z position of the electrode on the brain of the subject; set to 0';
 elecdesc_json.size                  = 'Surface size in mm2 of the electrode';
+elecdesc_json.interelectrode_distance = 'Interelectrode distance in mm of the grid or strip';
 elecdesc_json.material              = 'Material of the electrode. This is platinum in most situations';
 elecdesc_json.manufacturer          = 'Manufacturer of the electrode';
 elecdesc_json.group                 = 'Group to which electrode belongs, this can be grid, strip, depth or other';

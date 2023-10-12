@@ -71,7 +71,16 @@ cfg.HardwareFilters.LowpassFilter.CutoffFrequency = ieeg_json.HardwareFilters.Lo
 
 %% IEEG specific fields
 ieeg_json.iEEGReference                 = 'probably mastoid';
-ieeg_json.ElectrodeManufacturer         = metadata.electrode_manufacturer;
+
+if size(metadata.electrode_manufacturer,1) == 1
+    ElectrodeManufacturer = metadata.electrode_manufacturer;
+else
+    manufacturers = metadata.electrode_manufacturer;
+    manufacturers(strcmp(manufacturers,'n/a')) = [];
+    ElectrodeManufacturer = char(join(unique(manufacturers),','));
+end
+
+ieeg_json.ElectrodeManufacturer         = ElectrodeManufacturer;
 ieeg_json.ElectrodeManufacturersModelName = 'n/a';
 ieeg_json.iEEGGround                    = 'top of forehead or mastoid';
 ieeg_json.iEEGPlacementScheme           = metadata.hemisphere;

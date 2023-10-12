@@ -28,6 +28,7 @@ x                                         = repmat({0},header.Num_Chan,1);
 y                                         = repmat({0},header.Num_Chan,1);
 z                                         = repmat({0},header.Num_Chan,1);
 e_size                                    = repmat({'n/a'},header.Num_Chan,1); 
+ie_distance                               = repmat({'n/a'},header.Num_Chan,1); 
 material                                  = repmat({'n/a'},header.Num_Chan,1); 
 manufacturer                              = repmat({'n/a'},header.Num_Chan,1); 
 group                                     = extract_group_info(metadata);
@@ -39,10 +40,17 @@ resected                                  = repmat({'n/a'},header.Num_Chan,1);
 edge                                      = repmat({'n/a'},header.Num_Chan,1); 
 
 if(any(metadata.ch2use_included))
-    [e_size{metadata.ch2use_included}]        = deal('4.2');
+    if size(metadata.electrode_manufacturer,1) == 1
+        [manufacturer{metadata.ch2use_included}]  = deal(metadata.electrode_manufacturer);
+        [e_size{metadata.ch2use_included}]        = deal(metadata.electrode_size);
+        [ie_distance{metadata.ch2use_included}]   = deal(metadata.interelectrode_distance);
+    else
+        manufacturer = metadata.electrode_manufacturer;
+        e_size = metadata.electrode_size;
+        ie_distance = metadata.interelectrode_distance;
+    end
+
     [material{metadata.ch2use_included}]      = deal('Platinum');
-    
-    [manufacturer{metadata.ch2use_included}]  = deal('Ad-Tech')     ;                                                                               ;
 
     if strcmpi(metadata.hemisphere,'left')
         [hemisphere{metadata.ch2use_included}]    = deal('L');
@@ -73,8 +81,8 @@ if(any(metadata.ch2use_edge))
 end
 
 
-    electrodes_tsv                            = table(name, x , y, z, e_size, material, manufacturer, group,hemisphere, silicon, cavity, resected, edge ,...
-        'VariableNames',{'name', 'x', 'y', 'z', 'size', 'material', 'manufacturer','group','hemisphere', 'silicon' 'cavity','resected','edge'})     ;
+    electrodes_tsv                            = table(name, x , y, z, e_size, ie_distance, material, manufacturer, group,hemisphere, silicon, cavity, resected, edge ,...
+        'VariableNames',{'name', 'x', 'y', 'z', 'size', 'interelectrode distance', 'material', 'manufacturer','group','hemisphere', 'silicon' 'cavity','resected','edge'})     ;
 
 if ~isempty(electrodes_tsv)
     filename = fullfile(cfg.ieeg_dir,felectrodes_name);

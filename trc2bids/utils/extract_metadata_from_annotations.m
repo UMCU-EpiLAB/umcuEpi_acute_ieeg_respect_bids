@@ -88,10 +88,17 @@ try
     
     %% ---------- ELECTRODE MODEL ----------
     elecmodel_idx=cellfun(@(x) contains(x,{'Elec_model'}),annots(:,2));
-    if(sum(elecmodel_idx)==0)
-        metadata.electrode_manufacturer = 'AdTech'; %Elec_model is only annotated if something else than AdTech electrodes are used
+    if sum(elecmodel_idx)==0
+        metadata.electrode_manufacturer = 'Ad-Tech';
+        metadata.electrode_size = '4.2';
+        metadata.interelectrode_distance = '10';
+        warning('No electrode information is specified! Assumed that Ad-Tech grids/strips were used with 4.2 mm2 electrodes and 10 mm interelectrode distance')
+    
     else
+
         metadata = look_for_electrode_manufacturer(metadata,elecmodel_idx,annots);
+
+
     end
     
     %% ---------- GENDER ----------

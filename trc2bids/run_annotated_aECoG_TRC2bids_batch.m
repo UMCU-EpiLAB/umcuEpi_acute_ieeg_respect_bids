@@ -40,7 +40,7 @@ for i=1:size(files,1)
         
         cfg.filename = fullfile(cfg.pathname,files(i).name);
         
-        pathsplit = strsplit(cfg.pathname,{'/'});
+        pathsplit = strsplit(cfg.pathname,{'\'});
         patient = pathsplit{end-1};
         filesplit = strsplit(files(i).name,{'_','.TRC'});
         file = filesplit{end-1};
@@ -67,7 +67,7 @@ for i=1:size(runall,2)
         % There was an error in the previous run
         cfg.filename = fullfile(cfg.pathname,runall(i).file);
         
-        pathsplit = strsplit(cfg.pathname,{'/'});
+        pathsplit = strsplit(cfg.pathname,{'\'});
         patient = pathsplit{end-1};
         filesplit = strsplit(runall(i).file,{'_','.TRC'});
         file = filesplit{end-1};
@@ -99,7 +99,7 @@ end
 
 cfg.filename = fullfile(cfg.pathname,fileinput);
 
-pathsplit = strsplit(cfg.pathname,{'/'});
+pathsplit = strsplit(cfg.pathname,{'\'});
 patient = pathsplit{end};
 filesplit = strsplit(fileinput,{'_','.TRC'});
 file = filesplit{end-1};
@@ -125,7 +125,7 @@ for pat = 1:size(pats,1)
     
     if contains(pats(pat).name,'PAT')
         n = 1;
-        cfg.pathname = [fullfile(cfg.proj_dirinput,pats(pat).name),'/'];
+        cfg.pathname = [fullfile(cfg.proj_dirinput,pats(pat).name),'\'];
         
         files = dir(cfg.pathname);
         
@@ -140,7 +140,7 @@ for pat = 1:size(pats,1)
                 
                 cfg.filename = fullfile(cfg.pathname,files(i).name);
                 
-                pathsplit = strsplit(cfg.pathname,{'/'});
+                pathsplit = strsplit(cfg.pathname,{'\'});
                 patient = pathsplit{end-1};
                 filesplit = strsplit(files(i).name,{'_','.TRC'});
                 file = filesplit{end-1};
@@ -238,7 +238,7 @@ runs = [172, 356 354 183 184 332 360 333 342 321 329 317 193 334 198 343 ...
 for pat = 1:length(runs)
     
         n = 1;
-        cfg.pathname = [fullfile(cfg.proj_dirinput,['/PAT_',num2str(runs(pat))]),'/'];
+        cfg.pathname = [fullfile(cfg.proj_dirinput,['\PAT_',num2str(runs(pat))]),'\'];
         
         files = dir(cfg.pathname);
         
@@ -253,7 +253,7 @@ for pat = 1:length(runs)
                 
                 cfg.filename = fullfile(cfg.pathname,files(i).name);
                 
-                pathsplit = strsplit(cfg.pathname,{'/'});
+                pathsplit = strsplit(cfg.pathname,{'\'});
                 patient = pathsplit{end-1};
                 filesplit = strsplit(files(i).name,{'_','.TRC'});
                 file = filesplit{end-1};

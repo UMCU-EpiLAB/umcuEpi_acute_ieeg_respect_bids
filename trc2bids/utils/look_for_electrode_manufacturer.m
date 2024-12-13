@@ -10,9 +10,9 @@ for i = 1:size(annots_elecmodel,1)
     annotsmodelsplit = strsplit([annots_elecmodel{i,:}],{';','Elec_model;'});
     annotsmodelsplit = annotsmodelsplit(~cellfun(@isempty,annotsmodelsplit));
     if size(annotsmodelsplit,2) == 3
-        manufacturer = annotsmodelsplit{1};
-        ES = annotsmodelsplit{2};
-        IE = annotsmodelsplit{3};
+        [manufacturer{metadata.ch2use_included}] = deal(annotsmodelsplit{1});
+        [ES{metadata.ch2use_included}] = deal(annotsmodelsplit{2});
+        [IE{metadata.ch2use_included}] = deal(annotsmodelsplit{3});
 
 
     elseif size(annotsmodelsplit,2) >= 4
@@ -22,15 +22,13 @@ for i = 1:size(annots_elecmodel,1)
             input_str = [input_str,annotsmodelsplit{j},';'];
         end
 
-        ch_parsed= ch_parsed | parse_annotation(input_str,metadata.ch);% ; to use parse annotation
+        ch_parsed = ch_parsed | parse_annotation(input_str,metadata.ch);% ; to use parse annotation
         [manufacturer{ch_parsed}]  = deal(annotsmodelsplit{length(annotsmodelsplit)-2});
         [ES{ch_parsed}]  = deal(annotsmodelsplit{length(annotsmodelsplit)-1});
         [IE{ch_parsed}]  = deal(annotsmodelsplit{length(annotsmodelsplit)});
 
-
     else
         error('Elec_model annotation incorrect')
-
 
     end
 

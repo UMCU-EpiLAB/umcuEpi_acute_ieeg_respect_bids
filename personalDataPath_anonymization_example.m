@@ -11,13 +11,13 @@ if ~isempty(varargin{1})
     if isstruct(varargin{1})
         if strcmp(varargin{1}.mode,'anonymization')
             
-            cfg.proj_dirinput = '~/RESPsand/RESPect_scratch/Archive Micromed/';
-            % cfg.proj_dirinput = '/folder/to/copies/trc-files/temp_ecog/';
+            cfg.proj_dirinput = '~\2_RESPect_scratch\Archive Micromed\';
+            % cfg.proj_dirinput = '\folder\to\copies\trc-files\temp_ecog\';
             
-            % check whether remote location (samba share)
+            % check remote location
                 tempfiles = dir(cfg.proj_dirinput);
-                assert(~isempty(tempfiles),'Cannot locate files, check if (remote) directory (e.g. RESPsand) was properly mounted.');
-                cfg.copymethod = contains(tempfiles(1).folder,'smb'); % true if samba share
+                assert(~isempty(tempfiles),'Cannot locate files, check if (remote) directory (e.g. RESPect_scratch) was properly mounted.');
+                cfg.copymethod = contains(tempfiles(1).folder,'RESPect_scratch'); % true if RESPect_scratch in folder
                 
             if isfield(cfg,'copymethod') && cfg.copymethod==true
                 tempPat = input('Pat folder number in scratch (PAT_XX): ','s');
@@ -53,15 +53,15 @@ if ~isempty(varargin{1})
                     % YOURSELF!
                     foldername = input('Choose SystemPlus-folder: testomgeving, RESPect_acute_ECoG_trc: ','s');
                     if strcmp(foldername,'testomgeving')
-                        cfg.proj_dirinput = '/folder/to/trc-files/testomgeving/patients/';
+                        cfg.proj_dirinput = '\folder\to\trc-files\testomgeving\patients\';
                     elseif strcmp(foldername,'RESPect_acute_ECoG_trc')
-                        cfg.proj_dirinput = '/folder/to/trc-files/patients/';
+                        cfg.proj_dirinput = '\folder\to\trc-files\patients\';
                     else
                         error('Foldername is not recognized')
                     end
                 end
                 
-                cfg.proj_diroutput = '/folder/with/bidsfiles/acute_ECoG/';
+                cfg.proj_diroutput = '\folder\with\bidsfiles\acute_ECoG\';
 
             end
         end

@@ -153,8 +153,8 @@ try
         exts = {'.vhdr','.eeg', '.vmrk'};
         for i = 1:length(exts)
             dirname = replace(fullfile(ieeg_dir,fieeg_name),'.TRC',exts(i));
-            fileattrib(dirname,'-w -x','o') % make not-writable and not-executable for other users
-            fileattrib(dirname,'+w +x','g') % make writable and executable (required for folders to open them) for group users
+            %fileattrib(dirname,'-w -x','o') % make not-writable and not-executable for other users
+            %fileattrib(dirname,'+w +x','g') % make writable and executable (required for folders to open them) for group users
         end
         %% create json sidecar for ieeg file
         

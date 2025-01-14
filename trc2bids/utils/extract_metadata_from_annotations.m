@@ -227,7 +227,7 @@ try
     metadata.bsuppression = look_for_segment_notes(annots,sfreq,BSstarts,BSstops);
 
     %% look for stimulation
-    metadata.stimulation = look_for_segment_notes(annots,sfreq,{'Stim_on;'},{'Stim_off'});
+    metadata.stimulation = look_for_segment_notes(annots,sfreq,{'Stim_on'},{'Stim_off'});
     
     %% add triggers
     metadata.trigger.pos  = trigger(1,:) / sfreq  ;

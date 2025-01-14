@@ -36,7 +36,11 @@ elseif strcmp(header.acquisition_eq,'SD64')
 elseif strcmp(header.acquisition_eq,'FLEXI')
     ieeg_json.HardwareFilters.HighpassFilter.CutoffFrequency    = 0.11;
     ieeg_json.HardwareFilters.LowpassFilter.CutoffFrequency     = round(0.27*header.Rate_Min);
-    
+
+elseif strcmp(num2str(header.acquisition_eq),'63')
+    header.acquisition_eq = 'SD_LTM_64_plus';
+    ieeg_json.HardwareFilters.HighpassFilter.CutoffFrequency    = 0.11;
+    ieeg_json.HardwareFilters.LowpassFilter.CutoffFrequency     = round(0.27*header.Rate_Min); 
 end
 
 ieeg_json.Manufacturer                  = 'Micromed';

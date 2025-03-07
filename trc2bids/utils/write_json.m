@@ -14,9 +14,9 @@ else
     fwrite(fid, str);
     fclose(fid);
 end
-try
+% try
     %fileattrib(filename,'+w','g')
     %disp('json write permissions in output directory set for group')
-catch
-    warning('Could not automatically set group permissions. /n Check permissions for file %s', filename)
+% catch
+%     warning('Could not automatically set group permissions. /n Check permissions for file %s', filename)
 end
